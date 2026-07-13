@@ -40,8 +40,8 @@ echo "      -> python-osc, websocket-client"
 # ---- 4. daemon ----
 echo ""
 echo "[4/6] 部署 daemon ..."
-cp daemon.py /storage/kodi_agent.py
-echo "      -> /storage/kodi_agent.py"
+cp daemon.py /storage/daemon.py
+echo "      -> /storage/daemon.py"
 
 # ---- 5. 自启动 ----
 echo ""
@@ -50,7 +50,7 @@ cat > /storage/.config/autostart.sh << 'CEOF'
 #!/bin/sh
 (
   while ! grep -q 2382 /proc/net/tcp 2>/dev/null; do sleep 2; done
-  cd /storage && python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &
+  cd /storage && python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 )&
 CEOF
 chmod +x /storage/.config/autostart.sh
@@ -61,9 +61,9 @@ echo ""
 echo "[6/6] 启动 daemon ..."
 killall python3 2>/dev/null || true
 sleep 2
-cd /storage && nohup python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &
+cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 sleep 1
-echo "      -> pid $(pgrep -f kodi_agent.py 2>/dev/null || echo '?')"
+echo "      -> pid $(pgrep -f daemon.py 2>/dev/null || echo '?')"
 
 # ---- 完成 ----
 echo ""

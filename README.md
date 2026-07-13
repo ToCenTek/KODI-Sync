@@ -109,7 +109,7 @@
 ```
 ┌──────────────┐    OSC 组播（239.0.0.239:9000）    ┌──────────────┐
 │  Chataigne  │ ─────────────────────────────→ │ CoreELEC 媒体中心 │
-│  控制器      │ ←── OSC 单播（:5006）────────── │  kodi_agent.py  │
+│  控制器      │ ←── OSC 单播（:5006）────────── │  daemon.py  │
 └──────────────┘                                  │       ↓        │
                                                   │ JSON-RPC WS    │
                                                   │  localhost:9090 │
@@ -159,7 +159,7 @@ cat > /storage/.config/autostart.sh << 'EOF'
 #!/bin/sh
 (
   while ! grep -q 2382 /proc/net/tcp 2>/dev/null; do sleep 2; done
-  cd /storage && python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &
+  cd /storage && python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 )&
 EOF
 chmod +x /storage/.config/autostart.sh
