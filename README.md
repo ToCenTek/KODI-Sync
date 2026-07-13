@@ -130,30 +130,30 @@
 
 ## 安装
 
-### 依赖
+### 前置依赖（设备需能执行 Python3）
 
-```bash
-python3 -m ensurepip --upgrade 2>/dev/null || true
-python3 -m pip install python-osc websocket-client --user
+设备无需联网。以下文件均在 `libs/` 目录下：
+
+```
+libs/
+├── install.sh                          # 一键安装脚本
+├── daemon.py                           # 主程序
+├── ffmpeg-release-arm64-static.tar.xz  # ffprobe（静态编译）
+├── python_osc-1.10.2-py3-none-any.whl  # OSC 库
+└── websocket_client-1.9.0-py3-none-any.whl  # WebSocket 库
 ```
 
-### 离线部署（无网络环境）
+### 一键安装
 
 ```bash
-scp libs/*.whl root@<新机器IP>:/tmp/
-ssh root@<新机器IP> "python3 -m pip install --no-index --find-links=/tmp python-osc websocket-client --user"
-scp libs/ffprobe root@<新机器IP>:/storage/bin/
+# 把整个 libs 目录传到新机器
+scp -r libs root@<设备IP>:~/
+
+# SSH 登录后执行安装脚本
+ssh root@<设备IP> "cd ~/libs && ./install.sh"
 ```
 
-### 部署
-
-```bash
-scp daemon.py root@<IP>:/storage/kodi_agent.py
-ssh root@<IP> "killall python3 2>/dev/null; sleep 2; cd /storage && nohup python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &"
-```
-
-### 自启动
-
+脚本自动完成：解压 ffprobe → 安装 pip 依赖 → 部署 daemon → 设置开机自启动 → 启动服务。
 ```bash
 cat > /storage/.config/autostart.sh << 'EOF'
 #!/bin/sh
