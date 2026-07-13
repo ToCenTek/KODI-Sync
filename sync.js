@@ -7,14 +7,14 @@ function sendTick(tick) {
     local.send("/syncTick", tick);
 }
 
-// discoverMulticastMembers
+// 发现组成员
 function discoverMulticastMembers() {
     local.send("/discover");
     local.parameters.setCollapsed(true);
     local.values.getChild("multicastMembers").setCollapsed(false); // 展开 Multicast Members
     // root.modules.kodiSync.values.multicastMembers.members.set(""); // 创建前先清空
     // local.values.multicastMembers.members.set("");                          // 不同的调用方式
-    local.values.getChild("multicastMembers").getChild("members").set("");  // 不同的调用方式
+    // local.values.getChild("multicastMembers").getChild("members").set("");  // 不同的调用方式
 }
 
 // 修改本机监听端口, deamon会向新端口上报
@@ -25,20 +25,43 @@ function multicastReply(replyPort){
     local.send("/multicast/reply", replyPort);
 }
 
-// 修改组播地址, 
+// 修改组播地址, 提取当前组播成员, 逐个单播新地址, 注意, 必须先发现一次、拿到组成员 IP 表
+// 组播地址范围（IPv4，Class D）：
+// 范围	                            用途	                            能不能用
+// 224.0.0.0 ~ 224.0.0.255	    本地网络控制（OSPF、mDNS、DHCP 等协议用）   ❌ 别用，跟协议冲突
+// 224.0.1.0 ~ 238.255.255.255	公网全局组播	                         ⚠️ 理论上可以，但路由器可能不转发
+// 233.0.0.0/8	                GLOP 组播（AS 号映射）	                 ❌ 公网用
+// 239.0.0.0 ~ 239.255.255.255	管理作用域（私有组播）	                  ✅ 局域网专用，就是干这个的
 function multicastHost(host){
+    var members = local.values.multicastMembers.members.get();
+    var multicastPort = local.parameters.oscOutputs.oscOutput.remotePort.get();
+    // script.log(multicastPort + "\n" + members);
+
+    if (!members) {
+        local.values.getChild("multicastMembers").getChild("members").set(
+            "THERE MUST BE MEMBERS TO SWITCH MULTICAST GROUP");
+        return;
+    }
+    var ips = members.trim().split("\n");
+    for (var i = 0; i < ips.length; i++){
+        var ip = ips[i].trim();
+        if (ip === "") continue;
+        // script.log("IP: " + ip);
+        local.sendTo(ip, multicastPort, "/multicast/host", host);    // 单播到每个成员
+    }
     local.values.alignment.setCollapsed(true);
-    local.values.multicastMembers.setCollapsed(false);
     util.delayThreadMS(1000);    // 延时
-    local.send("/multicast/host", host);
+    discoverMulticastMembers(); // 重新发现
+    local.values.multicastMembers.setCollapsed(false);
 }
 
-// 修改组播端口, daemon需要重启
+// 修改组播端口, daemon 需要重启, 暂不实现
+// 为了防止被修改, 已在初始化阶段设置为只读
 function multicastPort(port){
+    local.send("/multicast/port", port);
     local.values.alignment.setCollapsed(true);
     local.values.multicastMembers.setCollapsed(false);
-    util.delayThreadMS(1000);    // 延时
-    local.send("/multicast/port", port);
+    // util.delayThreadMS(1000);    // 延时
 }
 
 // 组成员管理, 向成员单播: /member, join/leave
@@ -72,6 +95,7 @@ function updateMemberContainer() {
     }
     if (!members) return;
     
+    // 遍历组成员 IP
     var ips = members.split("\n");
     for (var i = 0; i < ips.length; i++) {
         var ip = ips[i].trim();
@@ -93,13 +117,13 @@ function updateMemberContainer() {
 }
 
 // 对齐准备: 值: 播放索引, 对齐时间点(ms)
-function alignmentReady(index, Status) {
-    local.send("/alignment/ready", index, Status);
+function alignmentReady(index, position) {
+    local.send("/alignment/ready", index, position);
 }
 
 // 对齐播放: 值: 播放索引, 对齐时间点(ms), 延迟时间
-function alignmentPlay(index, Status, delay) {
-    local.send("/alignment/play", index, Status, delay);
+function alignmentPlay(index, position, delay) {
+    local.send("/alignment/play", index, position, delay);
 }
 
 // 暂停播放
@@ -192,7 +216,7 @@ function xxx(address, args, originIp){
 
 function oscEvent(address, args, originIp) {
     script.log(originIp + " -> " + address + " " + args[0] + " " + args[1]);
-    if (address === "/daemon/discover") { // 发现组成员
+    if (address === "/daemon/discover"){ // 发现组成员
         var members = local.values.getChild("multicastMembers").getChild("members");
         var currentMembers = members.get();
         if (typeof currentMembers !== 'string') currentMembers = "";  // 脏东西洗白成字符串
@@ -220,7 +244,7 @@ function oscEvent(address, args, originIp) {
         }
         updateMemberContainer();
     } 
-    if (address === "/kodi/playlist") {
+    if (address === "/kodi/playlist"){
         var container = local.values.getChild(originIp.split(".").join(""));
         if (!container) return;
         if (typeof args[0] === "string") {
@@ -249,7 +273,7 @@ function oscEvent(address, args, originIp) {
         }
     }
 
-    if (address === "/kodi/alignment/ready") {
+    if (address === "/kodi/alignment/ready"){
         var file = args[2];
         var position = args[3];
         var status = args[4];
@@ -266,7 +290,7 @@ function oscEvent(address, args, originIp) {
             container.getChild("Playlist").setCollapsed(true);
         }
     }
-    if (address === "/kodi/alignment/play") {
+    if (address === "/kodi/alignment/play"){
         var file = args[2];
         // var position = args[2];
         var status = args[3];
@@ -282,7 +306,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/heartbeat") {
+    if (address === "/kodi/heartbeat"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
         var container = local.values.getChild(key);
         if (container) {
@@ -294,7 +318,7 @@ function oscEvent(address, args, originIp) {
     // /kodi/report/current_time : 128738
     // /kodi/report/current_time : 128662
     // /kodi/report/current_time : 128682
-    if (address === "/kodi/GetProperties") {
+    if (address === "/kodi/GetProperties"){
         // sync(originIp, args[0]);    // 呼叫 sync 去计算偏差
         var key = originIp.split(".").join("");
         var container = local.values.getChild(key);
@@ -305,7 +329,7 @@ function oscEvent(address, args, originIp) {
         }
     }
     // /kodi/report/member, join or leave
-    if (address === "/kodi/member") {
+    if (address === "/kodi/member"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
         var container = local.values.getChild(key);
         if (container) {
@@ -314,7 +338,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/playpause") {
+    if (address === "/kodi/playpause"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isPaused = local.values.alignment.getChild("isPaused");
@@ -325,7 +349,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/play") {
+    if (address === "/kodi/play"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isPaused = local.values.alignment.getChild("isPaused");
@@ -336,7 +360,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/pause") {
+    if (address === "/kodi/pause"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isPaused = local.values.alignment.getChild("isPaused");
@@ -347,7 +371,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/isPaused") {
+    if (address === "/kodi/isPaused"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isPause = local.values.alignment.getChild("isPaused");
@@ -358,7 +382,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/stop") {
+    if (address === "/kodi/stop"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isStop = local.values.alignment.getChild("isStopped");
@@ -369,7 +393,7 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
         }
     }
-    if (address === "/kodi/seekToTime") {
+    if (address === "/kodi/seekToTime"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
         var container = local.values.getChild(key);
         var isPaused = local.values.alignment.getChild("isPaused"); // 暂停指示灯
@@ -388,6 +412,20 @@ function oscEvent(address, args, originIp) {
     }
     if (address === "/daemon/config"){
         local.values.multicastMembers.message.set(args[0]);
+    }
+    if (address === "/kodi/OnAVStart"){
+        var key = originIp.split(".").join(""); // 去掉 IP 中的 . 
+        var container = local.values.getChild(key);
+        var isStop = local.values.alignment.getChild("isStopped");
+        isStop.set(args[0]);
+        var isPause = local.values.alignment.getChild("isPaused");
+        isPause.set(args[0]);
+        if (container) {
+            // container.getChild("Status").set("");
+            container.getChild("File").set(args[1]);
+            container.getChild("Status").set(args[2]);
+            container.setCollapsed(false); 
+        }
     }
 }
 function moduleParameterChanged(param) {
@@ -418,8 +456,8 @@ function moduleValueChanged(value) {
         script.log("ValueChanged: " + value.name + " : " + value.get());
         if (value.name === "alignmentTime" || value.name === "index") {
             var index = local.values.alignment.getChild("Index").get();
-            var seek = local.values.alignment.getChild("alignmentTime").get();
-            alignmentReady(index, seek);
+            var position = local.values.alignment.getChild("alignmentTime").get();
+            alignmentReady(index, position);
         }
         if (value.name === "loop") {
             setLoop(value.get());
@@ -433,8 +471,13 @@ function moduleValueChanged(value) {
             var memberIP = local.values.getChild("multicastMembers").getChild("memberIP").get();
             membersManager(memberIP, value.get());
         }
-        if (values.name === "message") {
+        if (value.name === "message") {
             local.parameters.setCollapsed(true);
+        }
+        if (value.name === "alignmentDelay") {
+            var index = local.values.alignment.getChild("Index").get();
+            var position = local.values.alignment.getChild("alignmentTime").get();
+            alignmentPlay(index, position, value.get());
         }
     }
     // 是触发器
@@ -499,8 +542,13 @@ function moduleValueChanged(value) {
 //     // root.modules.kodiSync.scripts.sync.params.tickTarget
 // }
 function init(){ 
+    // local.scripts.sync.updateRate.setAttribute("readOnly", false);
+    local.parameters.oscOutputs.oscOutput.remotePort.setAttribute("readOnly", true);
+    local.parameters.oscOutputs.oscOutput.remotePort.setAttribute("description", "远程主机的组播/单播监听端口\ndeamon 须重启生效, 所以暂不支持修改\n===============================");
+    local.parameters.oscOutputs.oscOutput.remoteHost.setAttribute("description", "组播地址, 要切组, 必须先有组成员\n使用 Discover Multicast Member 发现一次即可\n===============================");
 
-    local.scripts.sync.updateRate.setAttribute("readOnly", false);
+    local.parameters.oscInput.localPort.setAttribute("description", "本机监听端口、组播组成员的上报端口\n修改会通知到组播组以便成员切换\n===============================");
+
 
     // var newMetronomeModule = root.modules.getItemWithName("Tick for Sync");
     // if (newMetronomeModule == null) {
@@ -535,6 +583,9 @@ function init(){
     // util.showMessageBox("1", "message 1", "info", "buttonText");
     // script.delay(2000);
     // util.showMessageBox("2", "question 2", "", "buttonText");
+
+
+    
 }
 
 // function scriptParameterChanged(param) {

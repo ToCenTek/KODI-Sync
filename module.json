@@ -31,20 +31,13 @@
             "OSC Output":{
                 "collapsed": true,
                 "local": false,
-                "remoteHost": "239.0.0.69",
+                "remoteHost": "239.0.0.239",
                 "remotePort": 9000
             }
         }
     },
     
     "parameters": {
-        "Tick Frequency":{
-            "type": "Float", 
-            "description": "设置心跳频率, 单位: Hz\n=====================\nTick Frequency",
-            "default": 2.5,
-            "min":0,
-            "max":100
-        }
     },
 
     "values": {
@@ -64,10 +57,10 @@
                 "type": "Trigger",
                 "description": "设置 Index 和 Alignment time 后, 对齐准备\n=====================\nnAlignment Ready"
             },
-            "Alignment time":{
+            "Alignment Time":{
                 "type": "Integer", 
                 "description": "设置对齐时间点, 单位: ms\n=====================\nAlignment time",
-                "default": 2000,
+                "default": 1999,
                 "min":1
             },
             "Index":{
@@ -83,7 +76,7 @@
             "Alignment Delay":{
                 "type": "Integer", 
                 "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
-                "default": 2000,
+                "default": 4999,
                 "min":100
             },
             "Play":{
@@ -144,12 +137,12 @@
             },
             "Member IP":{
                 "type": "String",
-                "description": "组播组成员 IP\n=====================\nMulticast Group Member IP Address",
+                "description": "要管理的组播组成员 IP\n=====================\nMulticast Group Member IP Address",
                 "default": "10.0.0.69"
             },
             "Manager":{
                 "type": "Enum",
-                "description": "加入或离开组播组\n====================\nMulticast Group Manager",
+                "description": "使成员加入或离开组播组\n====================\nMulticast Group Manager",
                 "options": {
                     "---": "---",
                     "Join": "join",
@@ -201,7 +194,7 @@
             "callback": "buildPlaylist",
             "type": "Trigger"
         },
-        "Ready Play":{
+        "Alignment Ready":{
             "menu": "",
             "description": "设置 Index 和 Alignment time 后, 对齐准备\n=====================\nnAlignment Ready",
             "callback": "alignmentReady",
@@ -215,7 +208,7 @@
                 "Alignment time":{
                     "type": "Integer", 
                     "description": "设置对齐时间, 单位: ms",
-                    "default": 2000,
+                    "default": 1999,
                     "min":1
                 }
             }
@@ -231,10 +224,16 @@
                     "default": 0,
                     "min":0
                 },
+                "Alignment Time":{
+                    "type": "Integer", 
+                    "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
+                    "default": 1999,
+                    "min":1
+                },
                 "Alignment Delay":{
                     "type": "Integer", 
                     "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
-                    "default": 2000,
+                    "default": 4999,
                     "min":1
                 }
             }

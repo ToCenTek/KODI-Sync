@@ -6,7 +6,7 @@
 
 构建一个多台 CoreELEC 媒体中心的视频墙系统，每台媒体中心运行一个轻量 Python 代理：
 
-- 通过组播 OSC（239.0.0.69:9000）接收控制命令
+- 通过组播 OSC（239.0.0.239:9000）接收控制命令
 - 经 websocket JSON-RPC（localhost:9090）控制 Kodi
 - 通过单播 OSC 向控制器（Chataigne）上报状态
 - 所有播放操作在各设备独立执行，控制器统一协调
@@ -38,13 +38,15 @@
 | `/member join` | 加入组播组 | `/daemon/member` ("is Join multicast") |
 | `/member leave` | 离开组播组 | `/daemon/member` ("is Leave multicast") |
 | `/member ---` | 查询组播组成员状态 | `/daemon/member` ("I am in multicast group…" / "I am not in the multicast group") |
+| `/multicast/reply <port>` | 运行时更改回复端口 | `/daemon/config` ("Reporting Port: {port}") |
+| `/multicast/host <group>` | 运行时更改组播组地址 | `/daemon/config` ("Host: {group}") |
 
 ### 事件推送（自发状态上报）
 
 | 触发条件 | 响应 |
 |---|---|
 | Kodi 停止播放（Player.OnStop） | `/kodi/stop`, 1 + `/kodi/isPaused`, 0 |
-| Kodi 开始播放（Player.OnAVStart） | `/kodi/stop`, 0 + `/kodi/isPaused`, 0 |
+| Kodi 自然切换（Player.OnAVStart） | `/kodi/OnAVStart`, 0, 文件名, "is Player.OnAVChange" |
 | Kodi 恢复播放（Player.OnResume / Player.OnPlay） | `/kodi/isPaused`, 0 |
 | Kodi 暂停（Player.OnPause） | `/kodi/isPaused`, 1 |
 
@@ -105,7 +107,7 @@
 ## 技术架构
 
 ```
-┌──────────────┐    OSC 组播（239.0.0.69:9000）    ┌──────────────┐
+┌──────────────┐    OSC 组播（239.0.0.239:9000）    ┌──────────────┐
 │  Chataigne  │ ─────────────────────────────→ │ CoreELEC 媒体中心 │
 │  控制器      │ ←── OSC 单播（:5006）────────── │  kodi_agent.py  │
 └──────────────┘                                  │       ↓        │
@@ -160,13 +162,13 @@ chmod +x /storage/.config/autostart.sh
 ## 注意事项
 
 1. **CPU 亲和性**：默认绑定最后一块核心（CPU[3]），避免与 Kodi 视频解码（CPU 0/1）竞争；可通过 `/cpuAffinity` 动态调整
-2. **组播地址**：`239.0.0.69:9000`，硬编码（暂不支持环境变量配置）
+2. **组播地址**：默认 `239.0.0.239:9000`；可通过 `/multicast/host <group>` 运行时切换
 3. **单播/组播**：控制器发命令到组播地址，所有成员可接收；成员单播到 `控制器IP:5006` 上报
 4. **成员管理**：`/member leave` 后设备离开组播组，不再接收组播命令；`/member join` 重新加入
-5. **上报端口**：固定 5006
-6. **依赖**：需要 `python-osc` 库
-7. **Kodi Seek 精度**：Kodi 的 `Player.Seek` 只能跳到最近的关键帧（I 帧），精度受视频 GOP 大小限制
-8. **事件驱动**：所有 Kodi 状态变更通过 websocket 事件驱动，无轮询
+5. **上报端口**：默认 5006；可通过 `/multicast/reply <port>` 运行时修改，daemon 自动重试 3 次确认（0.3s 间隔）
+7. **依赖**：需要 `python-osc`、`websocket-client` 和 `ffprobe`（`/storage/bin/ffprobe`，CoreELEC 上需自行安装）
+8. **Kodi Seek 精度**：Kodi 的 `Player.Seek` 只能跳到最近的关键帧（I 帧），精度受视频 GOP 大小限制
+9. **事件驱动**：所有 Kodi 状态变更通过 websocket 事件驱动，无轮询
 
 ## 命名空间约定
 

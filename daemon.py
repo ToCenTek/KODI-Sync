@@ -7,7 +7,7 @@ KODI-Sync 守护进程（框架版）
 
 职责
 ----
-1. 加入组播组 239.0.0.69:9000，监听 OSC 消息。
+1. 加入组播组 239.0.0.239:9000，监听 OSC 消息。
 2. 收到 /discover 时：
    a. 通过 WebSocket 向本机 Kodi（:9090）查询版本；
    b. 读取本机非环回 IPv4 地址和 /sys/class/net/eth0/address 的 MAC；
@@ -62,10 +62,10 @@ from pythonosc.udp_client import SimpleUDPClient
 # ============================================================
 # 配置
 # ============================================================
-MCAST_GROUP = "239.0.0.69"
+mcast_group: str = "239.0.0.239"
 MCAST_PORT = 9000
 # 加入组播的本地接口；0.0.0.0 = 所有接口
-MCAST_IFACE = "0.0.0.0"
+mcast_iface: str = "0.0.0.0"
 
 KODI_WS_URL = "ws://127.0.0.1:9090/jsonrpc"
 KODI_WS_TIMEOUT = 5.0  # 初次连接超时（秒）
@@ -458,6 +458,7 @@ class _MulticastUDPHandler(socketserver.BaseRequestHandler):
             source_port=src_port,
         )
 
+
         # 收到一条
         log.info("OSC <- %s from %s:%d args=%s",
                  msg.address, src_ip, src_port, tuple(msg.params))
@@ -477,23 +478,23 @@ class MulticastOSCServer(socketserver.ThreadingUDPServer):
     def server_bind(self) -> None:
         mreq = struct.pack(
             "=4s4s",
-            socket.inet_aton(MCAST_GROUP),
-            socket.inet_aton(MCAST_IFACE),
+            socket.inet_aton(mcast_group),
+            socket.inet_aton(mcast_iface),
         )
         self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         # 接收缓冲区 64KB
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1024 * 64)
         super().server_bind()
         log.info("joined mcast %s:%d on iface %s",
-                 MCAST_GROUP, self.server_address[1], MCAST_IFACE)
+                 mcast_group, self.server_address[1], mcast_iface)
 
 
 class MulticastOSCReceiver:
     """对外的组播 OSC 接收 API，负责启停 server。"""
 
-    def __init__(self, group: str = MCAST_GROUP,
+    def __init__(self, group: str = mcast_group,
                  port: int = MCAST_PORT,
-                 iface: str = MCAST_IFACE):
+                 iface: str = mcast_iface):
         self.group = group
         self.port = port
         self.iface = iface
@@ -628,7 +629,7 @@ class KodiSyncDaemon:
         self._event_lock = threading.Lock()
         self._wait_method: Any = None  # str 或 Tuple[str, ...]
         self._wait_event: Optional[threading.Event] = None
-        self._pending_methods: set = set()
+        self._pending_methods: dict = {}
         self.kodi.on_notification = self._on_kodi_event
         # 最近一次 OSC 上下文（供自发事件上报）
         self._last_ctx: Optional[OSCContext] = None
@@ -664,30 +665,34 @@ class KodiSyncDaemon:
         - OnPause       → /kodi/isPaused, 1
         """
         has_stop = has_avstart = has_resume = has_play = has_pause = False
+        avstart_title = ""
         with self._event_lock:
-            if "Player.OnStop" in self._pending_methods:
+            params = self._pending_methods.pop("Player.OnStop", None)
+            if params is not None:
                 has_stop = True
-                self._pending_methods.discard("Player.OnStop")
-            if "Player.OnAVStart" in self._pending_methods:
+            params = self._pending_methods.pop("Player.OnAVStart", None)
+            if params is not None:
                 has_avstart = True
-                self._pending_methods.discard("Player.OnAVStart")
-            if "Player.OnResume" in self._pending_methods:
+                try:
+                    avstart_title = params.get("data", {}).get("item", {}).get("title", "")
+                except Exception:
+                    pass
+            params = self._pending_methods.pop("Player.OnResume", None)
+            if params is not None:
                 has_resume = True
-                self._pending_methods.discard("Player.OnResume")
-            if "Player.OnPlay" in self._pending_methods:
+            params = self._pending_methods.pop("Player.OnPlay", None)
+            if params is not None:
                 has_play = True
-                self._pending_methods.discard("Player.OnPlay")
-            if "Player.OnPause" in self._pending_methods:
+            params = self._pending_methods.pop("Player.OnPause", None)
+            if params is not None:
                 has_pause = True
-                self._pending_methods.discard("Player.OnPause")
         if has_stop:
             self._reply_last_ctx("/kodi/stop", 1)
             self._reply_last_ctx("/kodi/isPaused", 0)
             log.info("spontaneous OnStop -> /kodi/stop, 1")
         if has_avstart:
-            self._reply_last_ctx("/kodi/stop", 0)
-            self._reply_last_ctx("/kodi/isPaused", 0)
-            log.info("spontaneous OnAVStart -> /kodi/stop, 0 + /kodi/isPaused, 0")
+            self._reply_last_ctx("/kodi/OnAVStart", 0, avstart_title, "is Player.OnAVChange")
+            log.info("spontaneous OnAVStart -> /kodi/OnAVStart, 0, %s", avstart_title)
         if has_resume:
             self._reply_last_ctx("/kodi/isPaused", 0)
             log.info("spontaneous OnResume -> /kodi/isPaused, 0")
@@ -729,40 +734,19 @@ class KodiSyncDaemon:
             if self._wait_event is not None:
                 if isinstance(self._wait_method, tuple):
                     if method in self._wait_method:
-                        self._pending_methods.add(method)
+                        self._pending_methods[method] = params
                         self._wait_event.set()
                 elif self._wait_method == method:
                     self._wait_event.set()
             else:
-                self._pending_methods.add(method)
-        """KodiClient reader 线程转过来的 notification 入口。
-        若当前正在等该事件则 set event，否则加入 pending（防止事件先到后等）。"""
-        with self._event_lock:
-            if self._wait_method == method and self._wait_event is not None:
-                self._wait_event.set()
-            else:
-                self._pending_methods.add(method)
+                self._pending_methods[method] = params
+
 
     def _wait_for_kodi_event(self, method: str, timeout: float = 10.0) -> str:
         """等指定 Kodi 事件。命中 pending 立即返；否则 set _wait_method 后 wait event。
         返回事件名。超时抛 TimeoutError。"""
         return self._wait_for_any_kodi_event((method,), timeout=timeout)
-        """等指定 Kodi 事件。命中 pending 立即返；否则 set _wait_method 后 wait event。
-        超时抛 TimeoutError。"""
-        with self._event_lock:
-            if method in self._pending_methods:
-                self._pending_methods.discard(method)
-                return
-            self._wait_method = method
-            self._wait_event = threading.Event()
-            evt = self._wait_event
-        try:
-            if not evt.wait(timeout):
-                raise TimeoutError(f"Kodi event {method} timeout after {timeout}s")
-        finally:
-            with self._event_lock:
-                self._wait_method = None
-                self._wait_event = None
+
 
     def _wait_for_any_kodi_event(self, methods: Tuple[str, ...],
                                   timeout: float = 10.0) -> str:
@@ -770,7 +754,7 @@ class KodiSyncDaemon:
         with self._event_lock:
             for m in methods:
                 if m in self._pending_methods:
-                    self._pending_methods.discard(m)
+                    del self._pending_methods[m]
                     return m
             self._wait_method = methods
             self._wait_event = threading.Event()
@@ -786,7 +770,7 @@ class KodiSyncDaemon:
         with self._event_lock:
             for m in methods:
                 if m in self._pending_methods:
-                    self._pending_methods.discard(m)
+                    del self._pending_methods[m]
                     return m
         raise RuntimeError(f"Event triggered but not in {methods}")
 
@@ -817,6 +801,7 @@ class KodiSyncDaemon:
         self.receiver.map("/seek", self.on_seek)
         self.receiver.map("/cpuAffinity", self.on_cpu_affinity)
         self.receiver.map("/multicast/reply", self.on_multicast_reply)
+        self.receiver.map("/multicast/host", self.on_multicast_host)
     # ---- 对齐 helper ----
     @staticmethod
     def _time_dict_to_ms(t: Dict[str, Any]) -> int:
@@ -1270,7 +1255,7 @@ class KodiSyncDaemon:
         if action == "---":
             if self.receiver.is_joined:
                 self.reply(ctx, "/daemon/member",
-                         f"I am in multicast group {MCAST_GROUP}:{MCAST_PORT}")
+                         f"I am in multicast group {mcast_group}:{MCAST_PORT}")
             else:
                 self.reply(ctx, "/daemon/member",
                          "I am not in the multicast group")
@@ -1302,6 +1287,26 @@ class KodiSyncDaemon:
         for i in range(3):
             self.reply(ctx, "/daemon/config", f"Reporting Port: {new_port}")
             time.sleep(0.3)
+
+    # ---- /multicast/host (运行时改组播地址) ----
+    def on_multicast_host(self, ctx: OSCContext, *osc_args: Any) -> None:
+        self._last_ctx = ctx
+        if not osc_args:
+            return
+        new_group = str(osc_args[0])
+        # 简单验证 IPv4 地址格式
+        parts = new_group.split(".")
+        if len(parts) != 4 or not all(p.isdigit() and 0 <= int(p) <= 255 for p in parts):
+            self.reply(ctx, "/daemon/config", "bad host")
+            return
+        global mcast_group, mcast_iface
+        old = mcast_group
+        self.receiver.leave_group()
+        mcast_group = new_group
+        self.receiver.group = new_group
+        self.receiver.join_group()
+        log.info("mcast_group %s -> %s", old, new_group)
+        self.reply(ctx, "/daemon/config", f"Host: {new_group}")
 
     # ---- /cpuAffinity (CPU 亲和性) ----
     def on_cpu_affinity(self, ctx: OSCContext, *osc_args: Any) -> None:
