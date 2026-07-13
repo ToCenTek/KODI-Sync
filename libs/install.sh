@@ -65,6 +65,8 @@ cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 sleep 1
 echo "      -> pid $(pgrep -f daemon.py 2>/dev/null || echo '?')"
 
+
+
 # ---- 完成 ----
 echo ""
 echo "╔══════════════════════════════════════════╗"
