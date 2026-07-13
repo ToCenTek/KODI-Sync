@@ -90,7 +90,7 @@ LOG_LEVEL = logging.INFO
 # ============================================================
 # 日志
 # ============================================================
-log = logging.getLogger("kodi-sync")
+log = logging.getLogger("daemon")
 logging.basicConfig(
     level=LOG_LEVEL,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
