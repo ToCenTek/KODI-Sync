@@ -154,15 +154,39 @@ ssh root@<设备IP> "cd ~/libs && ./install.sh"
 ```
 
 脚本自动完成：解压 ffprobe → 安装 pip 依赖 → 部署 daemon → 设置开机自启动 → 启动服务。
+
+## 日常管理
+
+### 开机自启动
+
+安装脚本已自动设置好，每次开机 daemon 会自己跑起来。你什么都不用做。
+
+自启动文件位置：`/storage/.config/autostart.sh`
+
+### 停止 daemon
+
 ```bash
-cat > /storage/.config/autostart.sh << 'EOF'
-#!/bin/sh
-(
-  while ! grep -q 2382 /proc/net/tcp 2>/dev/null; do sleep 2; done
-  cd /storage && python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
-)&
-EOF
-chmod +x /storage/.config/autostart.sh
+killall python3
+```
+
+### 手动启动
+
+如果 daemon 没在运行，手动拉起来：
+
+```bash
+cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+```
+
+### 查看日志
+
+```bash
+tail -f /tmp/agent.log
+```
+
+### 重启（先停止再启动）
+
+```bash
+killall python3 && sleep 2 && cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 ```
 
 ## 注意事项
