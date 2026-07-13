@@ -134,7 +134,15 @@
 
 ```bash
 python3 -m ensurepip --upgrade 2>/dev/null || true
-python3 -m pip install python-osc --user
+python3 -m pip install python-osc websocket-client --user
+```
+
+### 离线部署（无网络环境）
+
+```bash
+scp libs/*.whl root@<新机器IP>:/tmp/
+ssh root@<新机器IP> "python3 -m pip install --no-index --find-links=/tmp python-osc websocket-client --user"
+scp libs/ffprobe root@<新机器IP>:/storage/bin/
 ```
 
 ### 部署
