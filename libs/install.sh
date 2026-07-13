@@ -33,7 +33,7 @@ echo "      -> pip $(python3 -m pip --version 2>/dev/null | cut -d' ' -f2)"
 # ---- 3. Python 库 ----
 echo ""
 echo "[3/6] 安装 Python 库 ..."
-python3 -m pip install --no-compile --no-index --find-links=. \
+python3 -m pip install --root-user-action=ignore --no-compile --no-index --find-links=. \
   python-osc websocket-client --user 2>&1 | tail -1
 echo "      -> python-osc, websocket-client"
 
