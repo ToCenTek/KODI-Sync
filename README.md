@@ -139,9 +139,9 @@ libs/
 ├── install.sh                          # 一键安装脚本
 ├── daemon.py                           # 主程序
 ├── ffmpeg-release-arm64-static.tar.xz  # ffprobe（静态编译）
+├── pip-26.1.2-py3-none-any.whl        # pip 自举
 ├── python_osc-1.10.2-py3-none-any.whl  # OSC 库
 └── websocket_client-1.9.0-py3-none-any.whl  # WebSocket 库
-```
 
 ### 一键安装
 
