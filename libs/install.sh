@@ -50,7 +50,7 @@ cat > /storage/.config/autostart.sh << 'CEOF'
 #!/bin/sh
 (
   while ! grep -q 2382 /proc/net/tcp 2>/dev/null; do sleep 2; done
-  cd /storage && python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+  cd /storage && python3 -u /storage/daemon.py > /tmp/daemon.log 2>&1 &
 )&
 CEOF
 chmod +x /storage/.config/autostart.sh
@@ -61,7 +61,7 @@ echo ""
 echo "[6/6] 启动 daemon ..."
 pkill -f daemon.py 2>/dev/null || true
 sleep 2
-cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+cd /storage && nohup python3 -u /storage/daemon.py > /tmp/daemon.log 2>&1 &
 sleep 1
 echo "      -> pid $(pgrep -f daemon.py 2>/dev/null || echo '?')"
 
@@ -72,6 +72,6 @@ echo ""
 echo "╔══════════════════════════════════════════╗"
 echo "║  安装完成！                               ║"
 echo "║                                          ║"
-echo "║  日志: tail -f /tmp/agent.log            ║"
-echo "║  重启: killall python3                   ║"
+echo "║  日志: tail -f /tmp/daemon.log           ║"
+echo "║  重启: pkill -f daemon.py               ║"
 echo "╚══════════════════════════════════════════╝"

@@ -174,19 +174,19 @@ pkill -f daemon.py
 如果 daemon 没在运行，手动拉起来：
 
 ```bash
-cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+cd /storage && nohup python3 -u /storage/daemon.py > /tmp/daemon.log 2>&1 &
 ```
 
 ### 查看日志
 
 ```bash
-tail -f /tmp/agent.log
+tail -f /tmp/daemon.log
 ```
 
 ### 重启（先停止再启动）
 
 ```bash
-pkill -f daemon.py && sleep 2 && cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+pkill -f daemon.py && sleep 2 && cd /storage && nohup python3 -u /storage/daemon.py > /tmp/daemon.log 2>&1 &
 ```
 
 ## 注意事项
