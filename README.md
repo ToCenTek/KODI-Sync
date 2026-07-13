@@ -148,10 +148,8 @@ scp libs/ffprobe root@<新机器IP>:/storage/bin/
 ### 部署
 
 ```bash
-for ip in 10.0.0.69 10.0.0.89 10.0.0.29; do
-  scp daemon.py root@$ip:/storage/kodi_agent.py
-  ssh root@$ip "killall python3 2>/dev/null; sleep 2; cd /storage && nohup python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &"
-done
+scp daemon.py root@<IP>:/storage/kodi_agent.py
+ssh root@<IP> "killall python3 2>/dev/null; sleep 2; cd /storage && nohup python3 -u /storage/kodi_agent.py > /tmp/agent.log 2>&1 &"
 ```
 
 ### 自启动
