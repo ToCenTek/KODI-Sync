@@ -59,7 +59,7 @@ echo "      -> /storage/.config/autostart.sh"
 # ---- 6. 启动 ----
 echo ""
 echo "[6/6] 启动 daemon ..."
-killall python3 2>/dev/null || true
+pkill -f daemon.py 2>/dev/null || true
 sleep 2
 cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 sleep 1

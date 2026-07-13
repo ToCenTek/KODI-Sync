@@ -166,7 +166,7 @@ ssh root@<设备IP> "cd ~/libs && ./install.sh"
 ### 停止 daemon
 
 ```bash
-killall python3
+pkill -f daemon.py
 ```
 
 ### 手动启动
@@ -186,7 +186,7 @@ tail -f /tmp/agent.log
 ### 重启（先停止再启动）
 
 ```bash
-killall python3 && sleep 2 && cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
+pkill -f daemon.py && sleep 2 && cd /storage && nohup python3 -u /storage/daemon.py > /tmp/agent.log 2>&1 &
 ```
 
 ## 注意事项
