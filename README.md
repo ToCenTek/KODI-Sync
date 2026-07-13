@@ -136,7 +136,8 @@
 
 ```
 libs/
-├── install.sh                          # 一键安装脚本
+├── install.sh                          # 一键安装
+├── uninstall.sh                        # 一键卸载
 ├── daemon.py                           # 主程序
 ├── ffmpeg-release-arm64-static.tar.xz  # ffprobe（静态编译）
 ├── pip-26.1.2-py3-none-any.whl        # pip 自举
@@ -154,6 +155,15 @@ ssh root@<设备IP> "cd ~/libs && ./install.sh"
 ```
 
 脚本自动完成：解压 ffprobe → 安装 pip 依赖 → 部署 daemon → 设置开机自启动 → 启动服务。
+
+### 一键卸载
+
+```bash
+# 同样在 libs 目录下执行
+ssh root@<设备IP> "cd ~/libs && ./uninstall.sh"
+```
+
+脚本会停止 daemon、删除所有文件、卸载 Python 库和 pip，恢复裸机状态。
 
 ## 日常管理
 
