@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.omo/
+.opencode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# build artifacts
+*.tar.xz
+*.zip
+dist/
+build/
+
+# generated / test
+kodi_agent.py
+osc_test.py
+multi_align_test.py
