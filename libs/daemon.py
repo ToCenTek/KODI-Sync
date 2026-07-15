@@ -47,7 +47,7 @@ reply_port: int = 5006
 
 VIDEOS_DIR = "/storage/videos"
 MEDIA_EXTS = {".mp4", ".mkv", ".avi", ".mov", ".webm", ".m4v", ".ts", ".flv"}
-FFPROBE_BIN = "/storage/bin/ffprobe"
+FFPROBE_BIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ffprobe")
 GOP_FFPROBE_TIMEOUT = 10.0
 
 LOG_LEVEL = logging.INFO

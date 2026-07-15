@@ -18,6 +18,10 @@ Thumbs.db
 dist/
 build/
 service.multiscreen-sync/
+
+# libs/ — track scripts, ignore binaries and extracted artifacts
+libs/ffprobe
+libs/ffmpeg-*-arm64-static/
 libs/*.tar.xz
 libs/*.whl
 
@@ -25,4 +29,3 @@ libs/*.whl
 kodi_agent.py
 osc_test.py
 multi_align_test.py
-
