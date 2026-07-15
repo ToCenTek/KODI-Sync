@@ -14,6 +14,7 @@ import os
 import queue
 import signal
 import socket
+import sys
 import struct
 import subprocess
 import threading
