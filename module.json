@@ -1,0 +1,379 @@
+{
+    "type": "OSC",
+    "name": "KODI Sync",
+    "path": "ToCenTek",
+    "version": "",
+    "description": "",
+    "hasInput": true,
+    "hasOutput": true,
+    "alwaysShowValues": true,
+    "hideDefaultCommands": false,
+    "hideDefaultParameters": [
+        "splitArguments",
+        "autoFeedback",
+        "colorSendMode",
+        "booleanSendMode",
+        "autoAdd",
+        "useHierarchy",
+        "clearValues"
+    ],
+    "defaults": {
+        "autoAdd": false,
+        "splitArguments": true,
+        "autoFeedback": false,
+        "colorSendMode": "color",
+        "booleanSendMode": "Int",
+        "useHierarchy": false,
+        "OSC Input": {
+            "localPort": "5006"
+        },
+        "OSC Outputs": {
+            "OSC Output":{
+                "collapsed": true,
+                "local": false,
+                "remoteHost": "239.0.0.239",
+                "remotePort": 9000
+            }
+        }
+    },
+    
+    "parameters": {
+    },
+
+    "values": {
+        "Discover Multicast Member": {
+            "type": "Trigger",
+            "description": "发现组播成员\n=====================\nDiscover Multicast Members"
+        },
+        "Build Playlist": {
+            "type": "Trigger",
+            "description": "构建播放列表\n要使用 ffprobe 查询关键帧, 耗时比较久\n=====================\nBuild Playlist"
+        },
+        "Alignment":{
+            "type": "Container",
+            "collapsed": true,
+            
+            "Alignment Ready":{
+                "type": "Trigger",
+                "description": "设置 Index 和 Alignment time 后, 对齐准备\n=====================\nnAlignment Ready"
+            },
+            "Alignment Time":{
+                "type": "Integer", 
+                "description": "设置对齐时间点, 单位: ms\n=====================\nAlignment time",
+                "default": 1999,
+                "min":1
+            },
+            "Index":{
+                "type": "Integer", 
+                "description": "要播放的文件在列表中的索引\n=====================\nIndex",
+                "default": 0,
+                "min":0
+            },
+            "Alignment Play":{
+                "type": "Trigger",
+                "description": "设置 Index 和 Alignment time 后, 对齐播放\n=====================\nnAlignment Play"
+            },
+            "Alignment Delay":{
+                "type": "Integer", 
+                "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
+                "default": 4999,
+                "min":0
+            },
+            "isPaused":{
+                "type": "Boolean",
+                "description": "已暂停\n=====================\nPaused",
+                "readOnly": true
+            },
+            "Play|Pause":{
+                "type": "Trigger",
+                "description": "切换暂停/播放\n=====================\nPause/Play"
+            },
+            "GetProperties":{
+                "type": "Trigger",
+                "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境、个体差异均会使响应值漂移\n=====================\nState"
+            },
+            "Alignment Seek":{
+                "type": "Integer",
+                "description": "对齐跳转到指定时间点(ms)\n还会延时 Alignment Delay 时间\n=====================\nSeek",
+                "min":1,
+                "default": 9998
+            },
+            "isStopped":{
+                "type": "Boolean",
+                "description": "已停止\n=====================\nis Stopped",
+                "readOnly": true
+            },
+            "Stop":{
+                "type": "Trigger",
+                "description": "停止播放, 回到主界面\n=====================\nStop"
+            },
+            "Loop":{
+                "type": "Enum",
+                "description": "循环模式\n--- : 查询当前模式\n=====================\nLoop Mode.",
+                "options": {
+                    "---": "---",
+                    "All": "RepeatAll",
+                    "One": "RepeatOne",
+                    "Off": "RepeatOff"
+                }
+            },
+            "Volume":{
+                "type": "Float",
+                "description": "音量\n=====================\nVolume",
+                "default": 80.0,
+                "min":0.0,
+                "max":100.0
+            },
+            "isMute":{
+                "type": "Boolean",
+                "description": "静音\n=====================\nMute",
+                "default": false
+            }
+        },
+        "Multicast Members":{
+            "type": "Container", 
+            "collapsed": true,
+            "Members":{
+                "type": "String", 
+                "description": "已加入的组播组成员\n=====================\nMulticast Group Member",
+                "default": "",
+                "multiline": true,
+                "readOnly": true
+            },
+            "Member IP":{
+                "type": "String",
+                "description": "要管理的组播组成员 IP\n=====================\nMulticast Group Member IP Address",
+                "default": "10.0.0.69"
+            },
+            "Manager":{
+                "type": "Enum",
+                "description": "使成员加入或离开组播组\n====================\nMulticast Group Manager",
+                "options": {
+                    "---": "---",
+                    "Join": "join",
+                    "Leave": "leave"
+                }
+            },
+            "Message":{
+                "type": "String",
+                "description": "成员进出信息\n=====================\nMulticast Group Member Message",
+                "default": "",
+                "multiline": false,
+                "readOnly": true
+            }
+        },
+        "Power Control":{
+            "type": "Container",
+            "collapsed": true,
+            "Restart KODI":{
+                "type": "Trigger",
+                "description": "重启 KODI\n=====================\nRestart KODI"
+            },
+            "Reboot System":{
+                "type": "Trigger",
+                "description": "重启系统\n=====================\nReboot"
+            },
+            "Shutdown System":{
+                "type": "Trigger",
+                "description": "关机\n=====================\nShutdown"
+            }
+        }
+    },
+
+    "scripts": ["sync.js"],
+
+    "commands": {
+        "Members Discover": {
+            "menu": "",
+            "description": "发现组播成员\n=====================\nDiscover Multicast Members",
+            "callback": "discoverMulticastMembers",
+            "type": "Trigger"
+        },
+        "Members Manager":{
+            "menu": "",
+            "callback": "membersManager",
+            "parameters" :{
+                "IP Address": {
+                    "type": "String",
+                    "description": "IP地址",
+                    "default": "10.0.0.69"
+                },
+                "Action": {
+                    "type": "Enum",
+                    "description": "Join: 加入组播组, Leave: 离开组播组",
+                    "options": {
+                        "---": "---",
+                        "Join": "join",
+                        "Leave": "leave"
+                    }
+                }
+            }
+        },
+        "Builder Playlist":{ 
+            "menu": "",
+            "description": "构建播放列表\n要使用 ffprobe 查询关键帧, 耗时比较久\n=====================\nBuild Playlist",
+            "callback": "buildPlaylist",
+            "type": "Trigger"
+        },
+        "Alignment Ready":{
+            "menu": "",
+            "description": "设置 Index 和 Alignment time 后, 对齐准备\n=====================\nnAlignment Ready",
+            "callback": "alignmentReady",
+            "parameters" :{
+                "Index": {
+                    "type": "Integer",
+                    "description": "要播放的文件在列表中的索引",
+                    "default": 0,
+                    "min":0
+                },
+                "Alignment time":{
+                    "type": "Integer", 
+                    "description": "设置对齐时间, 单位: ms",
+                    "default": 1999,
+                    "min":1
+                }
+            }
+        },
+        "Alignment Play":{
+            "menu": "",
+            "description": "设置 Index 和 Alignment time 后, 对齐播放\n=====================\nnAlignment Play",
+            "callback": "alignmentPlay",
+            "parameters" :{
+                "Index": {
+                    "type": "Integer",
+                    "description": "要播放的文件在列表中的索引\n=====================\nIndex",
+                    "default": 0,
+                    "min":0
+                },
+                "Alignment Time":{
+                    "type": "Integer", 
+                    "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
+                    "default": 1999,
+                    "min":1
+                },
+                "Alignment Delay":{
+                    "type": "Integer", 
+                    "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
+                    "default": 4999,
+                    "min":1
+                }
+            }
+        },
+        "Alignment Seek":{
+            "menu": "",
+            "callback": "seek",
+            "parameters" :{
+                "Time": {
+                    "type": "Integer",
+                    "description": "跳转到指定时间点(ms)\n注======================",
+                    "default": 9998,
+                    "min":1
+                },
+                "Delay": {
+                    "type": "Integer",
+                    "description": "延迟这段时间后, 恢复播放\n=================",
+                    "default": 4999,
+                    "min":1
+                }
+            }
+        },
+        "Play|Pause":{
+            "menu": "",
+            "callback": "playPause",
+            "type": "Trigger"
+        },
+        "Stop":{
+            "menu": "",
+            "callback": "stopPlay",
+            "type": "Trigger"
+        },
+        "GetProperties":{
+            "menu": "",
+            "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境、个体差异均会使响应值漂移\n=====================\nState",
+            "callback": "getProperties",
+            "type": "Trigger"
+        },
+        "CPU Affinity":{
+            "menu": "",
+            "callback": "cpuAffinity",
+            "parameters" :{
+                "CPU 0": {
+                    "type": "Boolean",
+                    "description": "此核心不推荐亲和, 硬件解码器运行在此核心",
+                    "default": false,
+                    "readOnly": true
+                },
+                "CPU 1": {
+                    "type": "Boolean",
+                    "description": "CPU 亲和性,允许 Agent 被调度到此核心",
+                    "default": false
+                },
+                "CPU 2": {
+                    "type": "Boolean",
+                    "description": "CPU 亲和性, 允许 Agent 被调度到此核心",
+                    "default": false
+                },
+                "CPU 3": {
+                    "type": "Boolean",
+                    "description": "CPU 亲和性, 允许 Agent 被调度到此核心",
+                    "default": true
+                }
+            }
+        },
+        "Loop":{
+            "menu": "",
+            "callback": "setLoop",
+            "parameters" :{
+                "Loop": {
+                    "type": "Enum",
+                    "description": "循环模式.\n--- : 查询当前模式\nLoop Mode.",
+                    "options": {
+                        "---": "---",
+                        "All": "RepeatAll",
+                        "One": "RepeatOne",
+                        "Off": "RepeatOff"
+                    }
+                }
+            }
+        },
+        "Volume":{
+            "menu": "",
+            "callback": "setVolume",
+            "parameters" :{
+                "Volume": {
+                    "type": "Float",
+                    "description": "音量, 0-100",
+                    "default": 80,
+                    "min":0,
+                    "max":100
+                }
+            }
+        },
+        "isMute":{
+            "menu": "",
+            "callback": "setMute",
+            "parameters" :{
+                "Mute": {
+                    "type": "Boolean",
+                    "description": "静音\n=================",
+                    "default": false
+                }
+            }
+        },
+        "Power Control":{
+            "menu": "",
+            "callback": "powerControl",
+            "parameters" :{
+                "Power Control": {
+                    "type": "Enum",
+                    "description": "电源控制.\n--- : 查询当前模式\nPower Mode.",
+                    "options": {
+                        "Restart KODI": "/restart",
+                        "Reboot System": "/reboot",
+                        "Shutdown System": "/shutdown"
+                    }
+                }
+            }
+        }
+    }
+}
