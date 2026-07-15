@@ -1,162 +1,705 @@
-
-{"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":2.454570770263672,"time":{"hours":0,"milliseconds":449,"minutes":0,"seconds":5},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-{"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":525,"minutes":0,"seconds":44},"speed":1,"time":{"hours":0,"milliseconds":912,"minutes":0,"seconds":49}}},"sender":"xbmc"}}
-{"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":2.454570770263672,"time":{"hours":0,"milliseconds":449,"minutes":0,"seconds":5},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-{"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":462,"minutes":0,"seconds":44},"speed":1,"time":{"hours":0,"milliseconds":912,"minutes":0,"seconds":49}}},"sender":"xbmc"}}
-{"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":22.52223014831543,"time":{"hours":0,"milliseconds":998,"minutes":0,"seconds":49},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-{"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":81,"minutes":0,"seconds":0},"speed":1,"time":{"hours":0,"milliseconds":980,"minutes":0,"seconds":49}}},"sender":"xbmc"}}
-{"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":24.184436798095704,"time":{"hours":0,"milliseconds":688,"minutes":0,"seconds":53},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-{"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":494,"minutes":2,"seconds":48},"speed":1,"time":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}},"sender":"xbmc"}}
-{"jsonrpc":"2.0","method":"Player.OnStop","params":{"data":{"end":true,"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"}},"sender":"xbmc"}}
-{"jsonrpc":"2.0","method":"Player.OnPlay","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
-{"id":"GetPlayerItem","jsonrpc":"2.0","result":{"item":{"file":"/storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4","label":"4K_29.97-Chimei-inn-RoastDuck.mp4","title":"","type":"unknown"}}}
-{"jsonrpc":"2.0","method":"Player.OnAVStart","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
-{"id":"GetCurrentListAllItems","jsonrpc":"2.0","result":{"items":[{"file":"/storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4","label":"4K_29.97-Chimei-inn-RoastDuck.mp4","playcount":99,"title":"","type":"unknown"},{"file":"/storage/videos/8K_25-Best_Of_Best_8K_HDR_FUHD.mkv","label":"8K_25-Best_Of_Best_8K_HDR_FUHD.mkv","playcount":31,"title":"","type":"unknown"},{"file":"/storage/videos/huaYao.mp4","label":"huaYao.mp4","playcount":69,"title":"","type":"unknown"}],"limits":{"end":3,"start":0,"total":3}}}
-{"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":0.5459607243537903,"time":{"hours":0,"milliseconds":212,"minutes":0,"seconds":1},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-{"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":966,"minutes":3,"seconds":40},"speed":1,"time":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}},"sender":"xbmc"}}
-{"jsonrpc":"2.0","method":"Player.OnStop","params":{"data":{"end":true,"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"}},"sender":"xbmc"}}
-
-{"id":"Player.PlayPause","jsonrpc":"2.0","result":{"speed":0}}
-{"jsonrpc":"2.0","method":"Player.OnPause","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":0}},"sender":"xbmc"}}
-
-{"id":"Player.PlayPause","jsonrpc":"2.0","result":{"speed":1}}
-{"jsonrpc":"2.0","method":"Player.OnResume","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
-
-15:55:02	CustomLoggerUI	Cleared.
-15:55:04	KODI 89	Message received : {"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":15.32789134979248,"time":{"hours":0,"milliseconds":27,"minutes":0,"seconds":34},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-15:55:04	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":-123,"minutes":0,"seconds":-12},"speed":1,"time":{"hours":0,"milliseconds":753,"minutes":0,"seconds":21}}},"sender":"xbmc"}}
-15:55:04	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnAVChange","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
-15:55:04	KODI 89	Message received : {"id":"SeekFromSlider","jsonrpc":"2.0","result":{"percentage":9.640350341796875,"time":{"hours":0,"milliseconds":401,"minutes":0,"seconds":21},"totaltime":{"hours":0,"milliseconds":994,"minutes":3,"seconds":41}}}
-15:55:04	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnSeek","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"seekoffset":{"hours":0,"milliseconds":579,"minutes":0,"seconds":0},"speed":1,"time":{"hours":0,"milliseconds":934,"minutes":0,"seconds":21}}},"sender":"xbmc"}}
-15:55:04	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnAVChange","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
-
-19:21:39	CustomLoggerUI	Cleared.
-19:21:49	KODI 89	Sending : {
-            "jsonrpc": "2.0",
-            "method": "Player.PlayPause",
-            "params": {
-              "playerid": 0,
-              "play": false
+{
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 2.454570770263672,
+        "time": {
+            "hours": 0,
+            "milliseconds": 449,
+            "minutes": 0,
+            "seconds": 5
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
             },
-            "id": "Player.SetSpeed"
-          }
-19:21:49	KODI 89	Message received : {"id":"Player.SetSpeed","jsonrpc":"2.0","result":{"speed":0}}
-19:21:49	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnPause","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":0}},"sender":"xbmc"}}
-19:21:55	KODI 89	Sending : {
-            "jsonrpc": "2.0",
-            "method": "Player.PlayPause",
-            "params": {
-              "playerid": 0,
-              "play": true
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 525,
+                    "minutes": 0,
+                    "seconds": 44
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 912,
+                    "minutes": 0,
+                    "seconds": 49
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 2.454570770263672,
+        "time": {
+            "hours": 0,
+            "milliseconds": 449,
+            "minutes": 0,
+            "seconds": 5
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
             },
-            "id": "Player.SetSpeed"
-          }
-19:21:55	KODI 89	Message received : {"id":"Player.SetSpeed","jsonrpc":"2.0","result":{"speed":1}}
-19:21:55	KODI 89	Message received : {"jsonrpc":"2.0","method":"Player.OnResume","params":{"data":{"item":{"title":"4K_29.97-Chimei-inn-RoastDuck.mp4","type":"movie"},"player":{"playerid":0,"speed":1}},"sender":"xbmc"}}
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 462,
+                    "minutes": 0,
+                    "seconds": 44
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 912,
+                    "minutes": 0,
+                    "seconds": 49
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 22.52223014831543,
+        "time": {
+            "hours": 0,
+            "milliseconds": 998,
+            "minutes": 0,
+            "seconds": 49
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 81,
+                    "minutes": 0,
+                    "seconds": 0
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 980,
+                    "minutes": 0,
+                    "seconds": 49
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 24.184436798095704,
+        "time": {
+            "hours": 0,
+            "milliseconds": 688,
+            "minutes": 0,
+            "seconds": 53
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 494,
+                    "minutes": 2,
+                    "seconds": 48
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 994,
+                    "minutes": 3,
+                    "seconds": 41
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnStop",
+    "params": {
+        "data": {
+            "end": true,
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnPlay",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "id": "GetPlayerItem",
+    "jsonrpc": "2.0",
+    "result": {
+        "item": {
+            "file": "/storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4",
+            "label": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+            "title": "",
+            "type": "unknown"
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnAVStart",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "id": "GetCurrentListAllItems",
+    "jsonrpc": "2.0",
+    "result": {
+        "items": [
+            {
+                "file": "/storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "label": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "playcount": 99,
+                "title": "",
+                "type": "unknown"
+            },
+            {
+                "file": "/storage/videos/8K_25-Best_Of_Best_8K_HDR_FUHD.mkv",
+                "label": "8K_25-Best_Of_Best_8K_HDR_FUHD.mkv",
+                "playcount": 31,
+                "title": "",
+                "type": "unknown"
+            },
+            {
+                "file": "/storage/videos/huaYao.mp4",
+                "label": "huaYao.mp4",
+                "playcount": 69,
+                "title": "",
+                "type": "unknown"
+            }
+        ],
+        "limits": {
+            "end": 3,
+            "start": 0,
+            "total": 3
+        }
+    }
+}
+{
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 0.5459607243537903,
+        "time": {
+            "hours": 0,
+            "milliseconds": 212,
+            "minutes": 0,
+            "seconds": 1
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 966,
+                    "minutes": 3,
+                    "seconds": 40
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 994,
+                    "minutes": 3,
+                    "seconds": 41
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnStop",
+    "params": {
+        "data": {
+            "end": true,
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            }
+        },
+        "sender": "xbmc"
+    }
+}
 
-9:42:58	CustomLoggerUI	Cleared.
-9:43:00	KODI Sync	Send OSC : /discover
-9:43:00	KODI Sync	/daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
-9:43:00	KODI Sync	/daemon/discover : 10.0.0.89 20:00:01:06:53:1c 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
-9:43:00	KODI Sync	/daemon/discover : 10.0.0.92 20:00:01:06:1a:c4 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
+{
+    "id": "Player.PlayPause",
+    "jsonrpc": "2.0",
+    "result": {
+        "speed": 0
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnPause",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 0
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+
+{
+    "id": "Player.PlayPause",
+    "jsonrpc": "2.0",
+    "result": {
+        "speed": 1
+    }
+}
+{
+    "jsonrpc": "2.0",
+    "method": "Player.OnResume",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+
+15: 55: 02	CustomLoggerUI	Cleared.
+15: 55: 04	KODI 89	Message received : {
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 15.32789134979248,
+        "time": {
+            "hours": 0,
+            "milliseconds": 27,
+            "minutes": 0,
+            "seconds": 34
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+15: 55: 04	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": -123,
+                    "minutes": 0,
+                    "seconds": -12
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 753,
+                    "minutes": 0,
+                    "seconds": 21
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+15: 55: 04	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnAVChange",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+15: 55: 04	KODI 89	Message received : {
+    "id": "SeekFromSlider",
+    "jsonrpc": "2.0",
+    "result": {
+        "percentage": 9.640350341796875,
+        "time": {
+            "hours": 0,
+            "milliseconds": 401,
+            "minutes": 0,
+            "seconds": 21
+        },
+        "totaltime": {
+            "hours": 0,
+            "milliseconds": 994,
+            "minutes": 3,
+            "seconds": 41
+        }
+    }
+}
+15: 55: 04	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnSeek",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "seekoffset": {
+                    "hours": 0,
+                    "milliseconds": 579,
+                    "minutes": 0,
+                    "seconds": 0
+                },
+                "speed": 1,
+                "time": {
+                    "hours": 0,
+                    "milliseconds": 934,
+                    "minutes": 0,
+                    "seconds": 21
+                }
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+15: 55: 04	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnAVChange",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+
+19: 21: 39	CustomLoggerUI	Cleared.
+19: 21: 49	KODI 89	Sending : {
+    "jsonrpc": "2.0",
+    "method": "Player.PlayPause",
+    "params": {
+        "playerid": 0,
+        "play": false
+    },
+    "id": "Player.SetSpeed"
+}
+19: 21: 49	KODI 89	Message received : {
+    "id": "Player.SetSpeed",
+    "jsonrpc": "2.0",
+    "result": {
+        "speed": 0
+    }
+}
+19: 21: 49	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnPause",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 0
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+19: 21: 55	KODI 89	Sending : {
+    "jsonrpc": "2.0",
+    "method": "Player.PlayPause",
+    "params": {
+        "playerid": 0,
+        "play": true
+    },
+    "id": "Player.SetSpeed"
+}
+19: 21: 55	KODI 89	Message received : {
+    "id": "Player.SetSpeed",
+    "jsonrpc": "2.0",
+    "result": {
+        "speed": 1
+    }
+}
+19: 21: 55	KODI 89	Message received : {
+    "jsonrpc": "2.0",
+    "method": "Player.OnResume",
+    "params": {
+        "data": {
+            "item": {
+                "title": "4K_29.97-Chimei-inn-RoastDuck.mp4",
+                "type": "movie"
+            },
+            "player": {
+                "playerid": 0,
+                "speed": 1
+            }
+        },
+        "sender": "xbmc"
+    }
+}
+
+9: 42: 58	CustomLoggerUI	Cleared.
+9: 43: 00	KODI Sync	Send OSC : /discover
+9: 43: 00	KODI Sync	/daemon/discover : 10.0.0.69 02: 00: 00: 2b:0e: 01 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
+9: 43: 00	KODI Sync	/daemon/discover : 10.0.0.89 20: 00: 01: 06: 53: 1c 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
+9: 43: 00	KODI Sync	/daemon/discover : 10.0.0.92 20: 00: 01: 06: 1a:c4 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
 // /discover命令被正确执行,请固化
-9:43:02	KODI Sync	Send OSC : /playlist
-9:43:02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
-9:43:02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
-9:43:02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
-9:43:11	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 102202 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mkv 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
-9:43:13	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
-9:43:14	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
+9: 43: 02	KODI Sync	Send OSC : /playlist
+9: 43: 02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
+9: 43: 02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
+9: 43: 02	KODI Sync	/kodi/playlist : -1 0 Please wait, ffprobe is processing...
+9: 43: 11	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 102202 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mkv 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
+9: 43: 13	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
+9: 43: 14	KODI Sync	/kodi/playlist : 1 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
 // /playlist命令被正确执行,但请修改上报报文: 去除前导参数 -1/1, 变成0 Please wait, ffprobe is processing...和3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 102202 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mkv 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
-9:43:24	KODI Sync	Send OSC : /alignment/ready
-9:43:24	OSCModule	0
-9:43:24	OSCModule	1999
-9:43:25	KODI Sync	/kodi/alignment/ready : 1 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1101 00:03:41.994
-9:43:25	KODI Sync	/kodi/alignment/ready : 1 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1101 00:03:41.994
+9: 43: 24	KODI Sync	Send OSC : /alignment/ready
+9: 43: 24	OSCModule	0
+9: 43: 24	OSCModule	1999
+9: 43: 25	KODI Sync	/kodi/alignment/ready : 1 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1101 00: 03: 41.994
+9: 43: 25	KODI Sync	/kodi/alignment/ready : 1 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1101 00: 03: 41.994
 // /alignment/ready命令被正确执行, 但仅有2个设备上报, 这个现象存疑,可能是网络问题导致丢包了?
-9:43:36	KODI Sync	Send OSC : /play
+9: 43: 36	KODI Sync	Send OSC : /play
 // 播放了,没有自发上报,可能是xbmc.sleep(300)太久了,请你仔细观察日志,大幅度减小延迟,它是阻塞的,对吗?如果无法减小,必须让它异步执行,否则严重影响同步性能!
-9:43:41	KODI Sync	Send OSC : /play
+9: 43: 41	KODI Sync	Send OSC : /play
 // 点第二次时变成了暂停,并自发上报了状态
-9:43:41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
-9:43:41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
-9:43:41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
-9:43:51	KODI Sync	Send OSC : /play
+9: 43: 41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
+9: 43: 41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
+9: 43: 41	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4
+9: 43: 51	KODI Sync	Send OSC : /play
 // 暂停态点播放,没有反应
-9:43:59	KODI Sync	Send OSC : /pause
+9: 43: 59	KODI Sync	Send OSC : /pause
 // 没有反应
-9:44:05	KODI Sync	Send OSC : /pause
-9:44:06	KODI Sync	Send OSC : /pause
-9:44:07	KODI Sync	Send OSC : /pause
-9:44:08	KODI Sync	Send OSC : /pause
-9:44:11	KODI Sync	Send OSC : /playpause
-9:44:14	KODI Sync	Send OSC : /playpause
-9:44:15	KODI Sync	Send OSC : /playpause
-9:44:15	KODI Sync	Send OSC : /playpause
+9: 44: 05	KODI Sync	Send OSC : /pause
+9: 44: 06	KODI Sync	Send OSC : /pause
+9: 44: 07	KODI Sync	Send OSC : /pause
+9: 44: 08	KODI Sync	Send OSC : /pause
+9: 44: 11	KODI Sync	Send OSC : /playpause
+9: 44: 14	KODI Sync	Send OSC : /playpause
+9: 44: 15	KODI Sync	Send OSC : /playpause
+9: 44: 15	KODI Sync	Send OSC : /playpause
 // 全都没有反应
 // 看来希望明确暂停/播放实现起来比较麻烦,需要更多的判断,我决定删除单独的 /play 和 /pause命令,仅保留 /playpause, 让kodi内部自动切换,这可以简化逻辑
-9:44:18	KODI Sync	Send OSC : /GetProperties
-9:44:18	KODI Sync	/kodi/GetProperties : 32347 00:03:41.994
-9:44:18	KODI Sync	/kodi/GetProperties : 32426 00:03:41.994
-9:44:18	KODI Sync	/kodi/GetProperties : 32406 00:03:41.994
+9: 44: 18	KODI Sync	Send OSC : /GetProperties
+9: 44: 18	KODI Sync	/kodi/GetProperties : 32347 00: 03: 41.994
+9: 44: 18	KODI Sync	/kodi/GetProperties : 32426 00: 03: 41.994
+9: 44: 18	KODI Sync	/kodi/GetProperties : 32406 00: 03: 41.994
 // /GetProperties命令修复好了,
-9:44:28	KODI Sync	Send OSC : /setLoop
-9:44:28	OSCModule	all
-9:44:30	KODI Sync	Send OSC : /setLoop
-9:44:30	OSCModule	---
-9:44:30	KODI Sync	/kodi/setLoop : 1 all
-9:44:30	KODI Sync	/kodi/setLoop : 1 all
-9:44:30	KODI Sync	/kodi/setLoop : 1 all
-9:44:31	KODI Sync	/kodi/setLoop : 1 all
-9:44:31	KODI Sync	/kodi/setLoop : 1 all
-9:44:31	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 28	KODI Sync	Send OSC : /setLoop
+9: 44: 28	OSCModule	all
+9: 44: 30	KODI Sync	Send OSC : /setLoop
+9: 44: 30	OSCModule	---
+9: 44: 30	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 30	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 30	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 31	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 31	KODI Sync	/kodi/setLoop : 1 all
+9: 44: 31	KODI Sync	/kodi/setLoop : 1 all
 // /setLoop --- 被执行了2次?是因为兼容 "---"和 " "的原因吗?如果是, 去掉空字符兼容, 我保证只发 ---
-9:44:59	KODI Sync	Send OSC : /seek
-9:44:59	OSCModule	10000
-9:44:59	OSCModule	4999
-9:45:09	KODI Sync	Send OSC : /seek
-9:45:09	OSCModule	200000
-9:45:09	OSCModule	4999
+9: 44: 59	KODI Sync	Send OSC : /seek
+9: 44: 59	OSCModule	10000
+9: 44: 59	OSCModule	4999
+9: 45: 09	KODI Sync	Send OSC : /seek
+9: 45: 09	OSCModule	200000
+9: 45: 09	OSCModule	4999
 // seek给你传了2个参数, position, delay, 你只执行了position, 忽略了delay,正确做法是,先判断当前是播放态还是暂停态,如果是播放态, 则跳转到position,等onPlayBackSeek事件的到来,收到该事件到来, 立即延时delay时间, 时间到了立即恢复播放,然后查询当前时间上报到'"/kodi/seek", 0 0 "onPlayBackResumed" "当前播放到文件名" "当前时间" "总时长"'(开发文档中曾经被移除了这条上报,现在重新加回来,如果代码中有/kodi/state/seek,则去除,以/kodi/seek为准,记得同步一下各个文档);如果是暂停态, 则跳转到position, 等onPlayBackSeek事件的到来,查询当前时间,上报到'"/kodi/seek", 1 0 "onPlayBackPaused" "当前播放的文件名" "当前时间" "总时长"',忽略delay; 上报参数与/kodi/state对齐,但多追加了"当前时间" "总时长"
+11: 27: 16	CustomLoggerUI	Cleared.
+11: 30: 05	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 30: 05	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
+11: 31: 56	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 31: 57	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
+11: 32: 01	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 32: 02	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
+11: 35: 21	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 37: 13	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 37: 18	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 40: 53	KODI Sync	Send OSC : /discover
+11: 40: 53	KODI Sync	/daemon/discover : 10.0.0.69 02: 00: 00: 2b:0e: 01 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
+11: 40: 53	KODI Sync	/daemon/discover : 10.0.0.92 20: 00: 01: 06: 1a:c4 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
+11: 40: 53	KODI Sync	/daemon/discover : 10.0.0.89 20: 00: 01: 06: 53: 1c 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
+11: 40: 54	KODI Sync	Send OSC : /playlist
+11: 40: 54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11: 40: 54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11: 40: 54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11: 41: 04	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 102202 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mkv 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
+11: 41: 05	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
+11: 41: 06	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00: 03: 41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00: 05: 07.480 25.000fps 480 307200 2 huaYao.mp4 00: 05: 15.907 30.000fps 5000 315000
 
 
-11:27:16	CustomLoggerUI	Cleared.
-11:30:05	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:30:05	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11:31:56	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:31:57	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11:32:01	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:32:02	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11:35:21	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:37:13	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:37:18	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11:40:53	KODI Sync	Send OSC : /discover
-11:40:53	KODI Sync	/daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
-11:40:53	KODI Sync	/daemon/discover : 10.0.0.92 20:00:01:06:1a:c4 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
-11:40:53	KODI Sync	/daemon/discover : 10.0.0.89 20:00:01:06:53:1c 20.5 (20.5.0) Git:515da9f73607587ecf866b45d44fd371b1b5bf8f
-11:40:54	KODI Sync	Send OSC : /playlist
-11:40:54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
-11:40:54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
-11:40:54	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
-11:41:04	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 102202 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mkv 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
-11:41:05	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
-11:41:06	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
+19: 07: 35	CustomLoggerUI	Cleared.
+19: 07: 37	KODI Sync	/kodi/state : 0 0 onPlayBackResumed /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1202 00: 03: 41.994
+19: 07: 37	KODI Sync	/kodi/state : 0 0 onPlayBackStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1202 00: 03: 41.994
+19: 07: 37	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -178 00: 03: 41.994
+19: 07: 37	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -178 00: 03: 41.994
+19: 07: 37	KODI Sync	/kodi/state : 1 0 onPlayBackSeek /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -126 00: 03: 41.994
+19: 07: 37	KODI Sync	/kodi/alignment/ready : 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -126 00: 03: 41.994
+19: 07: 42	KODI Sync	/kodi/GetProperties : 1101 00: 03: 41.994
 
+19: 27: 00	CustomLoggerUI	Cleared.
+19: 27: 05	KODI Sync	/kodi/state : 0 0 onPlayBackResumed /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1231 00: 03: 41.994
+19: 27: 05	KODI Sync	/kodi/state : 0 0 onPlayBackStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1231 00: 03: 41.994
+19: 27: 06	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -190 00: 03: 41.994
+19: 27: 06	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -190 00: 03: 41.994
+19: 27: 06	KODI Sync	/kodi/state : 1 0 onPlayBackSeek /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 2400 00: 03: 41.994
+19: 27: 06	KODI Sync	/kodi/alignment/ready : 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 2400 00: 03: 41.994
+19: 27: 12	KODI Sync	/kodi/GetProperties : 2202 00: 03: 41.994
 
-19:07:35	CustomLoggerUI	Cleared.
-19:07:37	KODI Sync	/kodi/state : 0 0 onPlayBackResumed /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1202 00:03:41.994
-19:07:37	KODI Sync	/kodi/state : 0 0 onPlayBackStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1202 00:03:41.994
-19:07:37	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -178 00:03:41.994
-19:07:37	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -178 00:03:41.994
-19:07:37	KODI Sync	/kodi/state : 1 0 onPlayBackSeek /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -126 00:03:41.994
-19:07:37	KODI Sync	/kodi/alignment/ready : 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -126 00:03:41.994
-19:07:42	KODI Sync	/kodi/GetProperties : 1101 00:03:41.994
-
-19:27:00	CustomLoggerUI	Cleared.
-19:27:05	KODI Sync	/kodi/state : 0 0 onPlayBackResumed /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1231 00:03:41.994
-19:27:05	KODI Sync	/kodi/state : 0 0 onPlayBackStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 1231 00:03:41.994
-19:27:06	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -190 00:03:41.994
-19:27:06	KODI Sync	/kodi/state : 1 0 onPlayBackPaused /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 -190 00:03:41.994
-19:27:06	KODI Sync	/kodi/state : 1 0 onPlayBackSeek /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 2400 00:03:41.994
-19:27:06	KODI Sync	/kodi/alignment/ready : 0 /storage/videos/4K_29.97-Chimei-inn-RoastDuck.mp4 2400 00:03:41.994
-19:27:12	KODI Sync	/kodi/GetProperties : 2202 00:03:41.994
+{"jsonrpc": "2.0","method": "Settings.SetSettingValue","params": {"addonid": "service.multiscreen-sync","key": "multicast_group","value": "239.0.0.100"},"id": 1}

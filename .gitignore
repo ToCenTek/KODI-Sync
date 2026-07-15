@@ -18,7 +18,8 @@ Thumbs.db
 dist/
 build/
 service.multiscreen-sync/
-libs/
+libs/*.tar.xz
+libs/*.whl
 
 # generated / test
 kodi_agent.py
