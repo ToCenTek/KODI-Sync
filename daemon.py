@@ -745,6 +745,12 @@ class KodiSyncDaemon:
         if event_name is None:
             return
 
+        # /kodi/error is reported separately (not via /kodi/state)
+        if event_name == "onPlayBackError":
+            err_code = (params.get("data") or {}).get("error", -1)
+            self._send_osc("/kodi/error", err_code, "playback failed")
+            return
+
         file_path, current_ms, total_ms = self._get_player_info()
         is_paused = 0
         if event_name in ("onPlayBackPaused",):
@@ -752,22 +758,17 @@ class KodiSyncDaemon:
         elif event_name in ("onPlayBackResumed", "onAVStarted", "onPlayBackStarted"):
             is_paused = 0
 
-        # For OnSeek, determine pause state from params or query
         if event_name == "onPlayBackSeek":
             paused_info = self._is_player_paused()
             if paused_info is not None:
                 is_paused = 1 if paused_info else 0
 
-        is_stopped = 1 if event_name in ("onPlayBackStopped", "onPlayBackEnded") else 0
+        is_stopped = 1 if event_name in ("onPlayBackStopped",) else 0
         fn = file_path if file_path else ""
         ct = max(0, current_ms) if not is_stopped else 0
 
         self._send_osc("/kodi/state", is_paused, is_stopped,
                        event_name, fn, ct, _ms_to_hms(total_ms))
-
-        if event_name == "onPlayBackError":
-            err_code = (params.get("data") or {}).get("error", -1)
-            self._send_osc("/kodi/error", err_code, "playback failed")
 
     @staticmethod
     def _method_to_event(method: str) -> Optional[str]:
@@ -777,7 +778,6 @@ class KodiSyncDaemon:
             "Player.OnResume": "onPlayBackResumed",
             "Player.OnPause": "onPlayBackPaused",
             "Player.OnStop": "onPlayBackStopped",
-            "Player.OnEnd": "onPlayBackEnded",
             "Player.OnSeek": "onPlayBackSeek",
             "Player.OnError": "onPlayBackError",
         }
