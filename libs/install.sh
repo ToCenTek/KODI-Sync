@@ -54,7 +54,7 @@ echo "      -> /storage/.config/autostart.sh"
 # ---- 5. 启动 ----
 echo ""
 echo "[5/6] 启动 daemon ..."
-pkill -f daemon.py 2>/dev/null || true
+pkill -9 -f daemon.py 2>/dev/null || true
 sleep 2
 cd "$DIR" && nohup python3 -u "$DIR/daemon.py" > /tmp/daemon.log 2>&1 &
 sleep 1
@@ -63,9 +63,10 @@ echo "      -> pid $(pgrep -f daemon.py 2>/dev/null || echo '?')"
 # ---- 完成 ----
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║  安装完成！                               ║"
+echo "║  安装完成!                                 ║"
 echo "║                                          ║"
-echo "║  日志: tail -f /tmp/daemon.log           ║"
-echo "║  停止: pkill -f daemon.py               ║"
-echo "║  启动: cd $DIR && python3 daemon.py  ║"
+echo "║  日志: tail -f /tmp/daemon.log            ║"
+echo "║  停止: pkill -9 -f daemon.py              ║"
+echo "║  前台启动: cd $DIR && python3 daemon.py                                 ║"
+echo "║  后台启动: cd $DIR && nohup python3 daemon.py > /tmp/daemon.log 2>&1 &  ║"                                        ║"
 echo "╚══════════════════════════════════════════╝"

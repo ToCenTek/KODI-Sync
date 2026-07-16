@@ -77,7 +77,13 @@ function membersManager(memberIP, args) {
 }
 // 让组成员构建播放列表
 function buildPlaylist() {
-    local.send("/playlist");
+    var newVideoDirectory = local.values.vidoeDirectory.get();
+    if (newVideoDirectory != null && newVideoDirectory != "") {
+        videos = newVideoDirectory;
+    } else {
+        videos = videoDirectory;
+    }
+    local.send("/playlist", videos);
 }
 
 // /restart: 重启 kodi, /reboot: 重启系统, /shutdown: 关闭系统
@@ -281,6 +287,16 @@ function oscEvent(address, args, originIp) {
             container.setCollapsed(false); 
             container.getChild("Playlist").setCollapsed(false); 
         }
+    }
+    if (address === "/kodi/playlist/state"){ 
+        var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
+        var container = local.values.getChild(key); // 在 Values 中找到与 IP 相同的容器
+        if (!container) return;
+        if (container){
+            container.getChild("Status").set("");
+            container.getChild("Status").set(args[0] + "  :  " + args[1] + "  :  " + args[2]);
+        }
+
     }
     // /kodi/alignment/ready  <index> <file> <current_ms> <total_hms>
     // /kodi/alignment/ready 0 "4K_29.97-Chimei-inn-RoastDuck.mp4" 1101 "00:03:41.955"

@@ -45,6 +45,11 @@
             "type": "Trigger",
             "description": "发现组播成员\n=====================\nDiscover Multicast Members"
         },
+        "Vidoe Directory":{
+            "type": "String",
+            "description": "视频目录.\nVideo Directory.",
+            "default": "/storage/videos"
+        },
         "Build Playlist": {
             "type": "Trigger",
             "description": "构建播放列表\n要使用 ffprobe 查询关键帧, 耗时比较久\n=====================\nBuild Playlist"

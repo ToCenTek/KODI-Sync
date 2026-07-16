@@ -8,7 +8,7 @@
 set -e
 
 echo "╔══════════════════════════════════════════╗"
-echo "║        KODI-Sync Agent 一键卸载          ║"
+echo "║        KODI-Sync Agent 一键卸载           ║"
 echo "╚══════════════════════════════════════════╝"
 
 # ---- 1. 停止 daemon ----
@@ -34,9 +34,17 @@ echo "[3/4] 删除自启动配置 ..."
 rm -f /storage/.config/autostart.sh
 echo "      -> /storage/.config/autostart.sh 已删除"
 
+# ---- 4. 清空日志 ----
+echo ""
+echo "[4/4] 清空日志 ..."
+> /tmp/daemon.log
+size=$(ls -l /tmp/daemon.log 2>/dev/null | awk '{print $5}')
+echo "      -> 日志: /tmp/daemon.log 当前大小: ${size:-0} 字节"
+
 # ---- 完成 ----
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║  已卸载。                               ║"
-echo "║  如需完全清除，请手动删除 ~/libs 目录。   ║"
+echo "║  已卸载                                   ║"
+echo "║  如需完全清除, 请手动删除 ~/libs 目录.       ║"
 echo "╚══════════════════════════════════════════╝"
+ 

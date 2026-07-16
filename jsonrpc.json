@@ -703,3 +703,42 @@
 19: 27: 12	KODI Sync	/kodi/GetProperties : 2202 00: 03: 41.994
 
 {"jsonrpc": "2.0","method": "Settings.SetSettingValue","params": {"addonid": "service.multiscreen-sync","key": "multicast_group","value": "239.0.0.100"},"id": 1}
+
+11:46:50	CustomLoggerUI	Cleared.
+11:52:09	KODI Sync	Send OSC : /playlist
+11:52:09	OSCModule	/Users/yhc/Movies
+11:52:09	KODI Sync	/kodi/playlist : 0 get_directory: Kodi Files.GetDirectory: {'code': -32602, 'message': 'Invalid params.'}
+11:52:09	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11:52:09	KODI Sync	/kodi/playlist : 0 listdir error: [Errno 2] No such file or directory: '/Users/yhc/Movies'
+11:52:11	KODI Sync	Send OSC : /discover
+11:52:11	KODI Sync	/daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
+11:52:11	KODI Sync	/daemon/discover : 10.0.0.89 20:00:01:06:53:1c 20.5
+11:52:12	KODI Sync	Send OSC : /playlist
+11:52:12	OSCModule	/Users/yhc/Movies
+11:52:12	KODI Sync	/kodi/playlist : 0 get_directory: Kodi Files.GetDirectory: {'code': -32602, 'message': 'Invalid params.'}
+11:52:12	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11:52:13	KODI Sync	/kodi/playlist : 0 listdir error: [Errno 2] No such file or directory: '/Users/yhc/Movies'
+11:53:36	KODI Sync	Send OSC : /discover
+11:53:36	KODI Sync	/daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
+11:53:36	KODI Sync	/daemon/discover : 10.0.0.89 20:00:01:06:53:1c 20.5
+11:53:37	KODI Sync	Send OSC : /playlist
+11:53:37	OSCModule	/Users/yhc/Movies
+11:53:37	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+11:53:37	KODI Sync	/kodi/playlist : 0 listdir error: [Errno 2] No such file or directory: '/Users/yhc/Movies'
+11:53:37	KODI Sync	/kodi/playlist : 0 get_directory: Kodi Files.GetDirectory: {'code': -32602, 'message': 'Invalid params.'}
+12:05:13	WebSocket Client	Connection opened
+12:07:40	KODI Sync	Send OSC : /discover
+12:07:40	KODI Sync	/daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
+12:07:40	KODI Sync	/daemon/discover : 10.0.0.89 20:00:01:06:53:1c 20.5
+12:07:42	KODI Sync	Send OSC : /playlist
+12:07:42	OSCModule	/Users/yhc/Movies
+12:07:42	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+12:07:42	KODI Sync	/kodi/playlist : 0 listdir error: [Errno 2] No such file or directory: '/Users/yhc/Movies'
+12:07:42	KODI Sync	/kodi/playlist : 0 get_directory: Kodi Files.GetDirectory: {'code': -32602, 'message': 'Invalid params.'}
+12:19:34	KODI Sync	Send OSC : /playlist
+12:19:34	OSCModule	/Users/yhc/Movies
+12:19:34	KODI Sync	/kodi/playlist/state : ERROR /Users/yhc/Movies INVALID DIRECTORY
+12:19:34	KODI Sync	/kodi/playlist : 0 Please wait, ffprobe is processing...
+12:19:34	KODI Sync	/kodi/playlist : 0 listdir error: [Errno 2] No such file or directory: '/Users/yhc/Movies'
+12:19:44	KODI Sync	/kodi/playlist/state : OK /storage/videos OK
+12:19:44	KODI Sync	/kodi/playlist : 3 0 4K_29.97-Chimei-inn-RoastDuck.mp4 00:03:41.955 29.970fps 1101 221087 1 8K_25-Best_Of_Best_8K_HDR_FUHD.mp4 00:05:07.480 25.000fps 480 307200 2 huaYao.mp4 00:05:15.907 30.000fps 5000 315000
