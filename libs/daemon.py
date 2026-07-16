@@ -1041,10 +1041,18 @@ class KodiSyncDaemon:
         self._last_ctx = ctx
         self._send_osc("/kodi/playlist", 0, "Please wait, ffprobe is processing...")
 
-        directory = str(osc_args[0]) if osc_args else VIDEOS_DIR
+        directory = str(osc_args[0]) if (osc_args and osc_args[0]) else VIDEOS_DIR
         threading.Thread(target=self._build_playlist, args=(ctx, directory), daemon=True).start()
 
     def _build_playlist(self, ctx: OSCContext, directory: str):
+        attempts = [directory]
+        if directory != VIDEOS_DIR:
+            attempts.append(VIDEOS_DIR)
+        for d in attempts:
+            if self._try_build_playlist(ctx, d):
+                return
+
+    def _try_build_playlist(self, ctx: OSCContext, directory: str) -> bool:
         try:
             dir_resp = self.kodi.call("Files.GetDirectory", {
                 "directory": directory,
@@ -1052,22 +1060,27 @@ class KodiSyncDaemon:
                 "properties": ["file"],
                 "sort": {"method": "file", "order": "ascending", "ignorearticle": True},
             })
-        except Exception as e:
-            log.error("get_directory failed: %s", e)
-            self.reply(ctx, "/kodi/playlist", 0, f"get_directory: {e}")
-            return
+        except Exception:
+            self.reply(ctx, "/kodi/playlist/state", "ERROR", directory, "INVALID DIRECTORY")
+            return False
 
         files = [it["file"] for it in (dir_resp or {}).get("files", []) if it.get("file")]
+        ext = MEDIA_EXTS
+        video_files = [f for f in files if os.path.splitext(f)[1].lower() in ext]
+
+        if not video_files:
+            self.reply(ctx, "/kodi/playlist/state", "ERROR", directory, "NO VIDEO FILE")
+            return False
 
         try:
             self.kodi.call_no_result("Playlist.Clear", {"playlistid": 1})
         except Exception as e:
             log.error("playlist clear failed: %s", e)
-            self.reply(ctx, "/kodi/playlist", 0, f"clear: {e}")
-            return
+            self.reply(ctx, "/kodi/playlist/state", "ERROR", directory, "UNKNOWN ERROR")
+            return False
 
         item_args: list = []
-        for idx, fp in enumerate(files):
+        for idx, fp in enumerate(video_files):
             try:
                 self.kodi.call_no_result("Playlist.Insert", {
                     "playlistid": 1, "position": idx, "item": {"file": fp},
@@ -1085,8 +1098,14 @@ class KodiSyncDaemon:
                               second_idr_ms, last_idr_ms])
 
         count = len(item_args) // 6
-        log.info("playlist built: %d items", count)
+        if count == 0:
+            self.reply(ctx, "/kodi/playlist/state", "ERROR", directory, "UNKNOWN ERROR")
+            return False
+
+        log.info("playlist built: %d items from %s", count, directory)
+        self.reply(ctx, "/kodi/playlist/state", "OK", directory, "OK")
         self.reply(ctx, "/kodi/playlist", count, *item_args)
+        return True
 
     def on_member(self, ctx: OSCContext, *osc_args: Any):
         self._last_ctx = ctx
