@@ -57,7 +57,7 @@ LOG_LEVEL = logging.INFO
 #  LOGGING
 # ═══════════════════════════════════════════════════════════════
 
-log = logging.getLogger("daemon")
+log = logging.getLogger("multiscreen-sync")
 logging.basicConfig(
     level=LOG_LEVEL,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -331,6 +331,7 @@ class Phase(Enum):
     OPENING = auto()      # Player.Play sent, waiting for OnAVStart
     PAUSING = auto()      # PlayPause(False) sent, waiting for OnPause
     SEEKING = auto()      # Player.Seek sent, waiting for OnSeek
+    SEEK_SETTLING = auto()# Seek executed, polling until position stabilises
     DELAYING = auto()     # Timer running before resume
     RESUMING = auto()     # PlayPause(True) sent, waiting for OnResume
     SEEK_WAIT = auto()    # /seek command: just seek (no pause needed)
@@ -348,6 +349,8 @@ class Command:
     actual_ms: int = 0
     total_ms: int = 0
     timer: Optional[threading.Timer] = None
+    settle_start: float = 0.0
+    settle_readings: list = field(default_factory=list)
 
 # ═══════════════════════════════════════════════════════════════
 #  MULTICAST OSC RECEIVER
@@ -620,11 +623,13 @@ class KodiSyncDaemon:
         self._event_queue.put((method, params))
 
     def _event_loop(self):
-        """Dedicated thread: processes Kodi events sequentially."""
+        """Dedicated thread: processes Kodi events and polls seek settle."""
+        SETTLE_POLL_S = 0.05
         while not self._stop.is_set():
             try:
-                method, params = self._event_queue.get(timeout=0.5)
+                method, params = self._event_queue.get(timeout=SETTLE_POLL_S)
             except queue.Empty:
+                self._poll_settle()
                 continue
             try:
                 self._process_event(method, params)
@@ -665,56 +670,28 @@ class KodiSyncDaemon:
                                           timeout=5.0)
                 return
 
-            # ── SEEKING → handle OnSeek ──
+            # ── SEEKING → handle OnSeek → SEEK_SETTLING ──
             if phase == Phase.SEEKING and method == "Player.OnSeek":
                 file_path, current_ms, total_ms = self._get_player_info()
                 cmd.file_path = file_path
                 cmd.actual_ms = current_ms
                 cmd.total_ms = total_ms
-
-                if cmd.cmd_type == "alignment_ready":
-                    log.debug("State: SEEKING → IDLE (alignment_ready)")
-                    self.reply(cmd.ctx, "/kodi/alignment/ready",
-                               cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
-                    self._cmd = None
-
-                elif cmd.cmd_type == "alignment_play":
-                    log.debug("State: SEEKING → DELAY (alignment_play)")
-                    self.reply(cmd.ctx, "/kodi/alignment/play",
-                               cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
-                    if cmd.delay_ms > 0:
-                        cmd.phase = Phase.DELAYING
-                        cmd.timer = threading.Timer(cmd.delay_ms / 1000.0,
-                                                     self._timer_resume)
-                        cmd.timer.start()
-                    else:
-                        cmd.phase = Phase.RESUMING
-                        self._kodi_play_pause(play=True)
-
-                elif cmd.cmd_type == "seek":
-                    log.debug("State: SEEKING → ... (seek)")
-                    self.reply(cmd.ctx, "/kodi/alignment/seek",
-                               cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
-                    if cmd.delay_ms > 0 and cmd.was_playing:
-                        cmd.phase = Phase.DELAYING
-                        cmd.timer = threading.Timer(cmd.delay_ms / 1000.0,
-                                                     self._timer_resume)
-                        cmd.timer.start()
-                    elif cmd.was_playing:
-                        cmd.phase = Phase.RESUMING
-                        self._kodi_play_pause(play=True)
-                    else:
-                        self._cmd = None
-
+                cmd.phase = Phase.SEEK_SETTLING
+                cmd.settle_start = time.monotonic()
+                cmd.settle_readings = [current_ms]
+                log.debug("State: SEEKING → SEEK_SETTLING (initial: %dms)", current_ms)
                 return
 
-            # ── SEEK_WAIT → handle OnSeek (pause-only seek path) ──
+            # ── SEEK_WAIT → handle OnSeek → SEEK_SETTLING ──
             if phase == Phase.SEEK_WAIT and method == "Player.OnSeek":
                 file_path, current_ms, total_ms = self._get_player_info()
-                self.reply(cmd.ctx, "/kodi/alignment/seek",
-                           cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
-                self._cmd = None
-                log.debug("State: SEEK_WAIT → IDLE")
+                cmd.file_path = file_path
+                cmd.actual_ms = current_ms
+                cmd.total_ms = total_ms
+                cmd.phase = Phase.SEEK_SETTLING
+                cmd.settle_start = time.monotonic()
+                cmd.settle_readings = [current_ms]
+                log.debug("State: SEEK_WAIT → SEEK_SETTLING (initial: %dms)", current_ms)
                 return
 
             # ── RESUMING → IDLE ──
@@ -737,6 +714,86 @@ class KodiSyncDaemon:
                 return
             cmd.phase = Phase.RESUMING
         self._kodi_play_pause(play=True)
+
+    # ── Seek settle polling ──
+
+    SETTLE_TIMEOUT_S = 2.0
+    SETTLE_MAX_READINGS = 3
+    SETTLE_THRESHOLD_MS = 4   # 1/4 frame at 60 fps ≈ 4.17ms
+
+    def _poll_settle(self):
+        with self._lock:
+            cmd = self._cmd
+            if cmd is None or cmd.phase not in (Phase.SEEK_SETTLING,):
+                return
+
+        _, current_ms, _ = self._get_player_info()
+
+        with self._lock:
+            if self._cmd is not cmd or cmd.phase != Phase.SEEK_SETTLING:
+                return
+            cmd.settle_readings.append(current_ms)
+            if len(cmd.settle_readings) > self.SETTLE_MAX_READINGS:
+                cmd.settle_readings.pop(0)
+
+            elapsed = time.monotonic() - cmd.settle_start
+            readings = cmd.settle_readings
+
+            if len(readings) >= self.SETTLE_MAX_READINGS:
+                stable = all(
+                    abs(r - readings[-1]) < self.SETTLE_THRESHOLD_MS
+                    for r in readings
+                )
+                if stable:
+                    log.debug("Seek settled after %.0fms @ %dms (readings=%s)",
+                              elapsed * 1000, readings[-1], readings)
+                    self._finalize_seek(cmd, readings[-1])
+                    return
+
+            if elapsed >= self.SETTLE_TIMEOUT_S:
+                log.warning("Seek settle timeout after %.1fs, using %dms (target=%dms, diff=%+dms)",
+                            elapsed, current_ms,
+                            cmd.target_pos_ms, current_ms - cmd.target_pos_ms)
+                self._finalize_seek(cmd, current_ms)
+
+    def _finalize_seek(self, cmd: Command, current_ms: int):
+        file_path = cmd.file_path
+        total_ms = cmd.total_ms
+        log.debug("State: SEEK_SETTLING → ...")
+
+        if cmd.cmd_type == "alignment_ready":
+            log.debug("State: SEEK_SETTLING → IDLE (alignment_ready)")
+            self.reply(cmd.ctx, "/kodi/alignment/ready",
+                       cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
+            self._cmd = None
+
+        elif cmd.cmd_type == "alignment_play":
+            log.debug("State: SEEK_SETTLING → DELAY (alignment_play)")
+            self.reply(cmd.ctx, "/kodi/alignment/play",
+                       cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
+            if cmd.delay_ms > 0:
+                cmd.phase = Phase.DELAYING
+                cmd.timer = threading.Timer(cmd.delay_ms / 1000.0,
+                                             self._timer_resume)
+                cmd.timer.start()
+            else:
+                cmd.phase = Phase.RESUMING
+                self._kodi_play_pause(play=True)
+
+        elif cmd.cmd_type == "seek":
+            log.debug("State: SEEK_SETTLING → ... (seek)")
+            self.reply(cmd.ctx, "/kodi/alignment/seek",
+                       cmd.target_idx, file_path, current_ms, _ms_to_hms(total_ms))
+            if cmd.delay_ms > 0 and cmd.was_playing:
+                cmd.phase = Phase.DELAYING
+                cmd.timer = threading.Timer(cmd.delay_ms / 1000.0,
+                                             self._timer_resume)
+                cmd.timer.start()
+            elif cmd.was_playing:
+                cmd.phase = Phase.RESUMING
+                self._kodi_play_pause(play=True)
+            else:
+                self._cmd = None
 
     # ── Spontaneous event reporting ──
 
@@ -805,6 +862,9 @@ class KodiSyncDaemon:
             ("/cpuAffinity", self.on_cpu_affinity),
             ("/multicast/reply", self.on_multicast_reply),
             ("/multicast/host", self.on_multicast_host),
+            ("/restart", self.on_restart),
+            ("/reboot", self.on_reboot),
+            ("/shutdown", self.on_shutdown),
         ]:
             self.receiver.map(addr, handler)
 
@@ -1010,16 +1070,13 @@ class KodiSyncDaemon:
         if not osc_args or not osc_args[0]:
             self.reply(ctx, "/kodi/setLoop", "unknown")
             return
-        mode = str(osc_args[0]).lower()
+        mode = str(osc_args[0])
         if mode == "all":
             self.kodi.call_no_result("Player.SetRepeat", {"playerid": 1, "repeat": "all"}, timeout=3.0)
         elif mode == "one":
             self.kodi.call_no_result("Player.SetRepeat", {"playerid": 1, "repeat": "one"}, timeout=3.0)
         elif mode == "off":
             self.kodi.call_no_result("Player.SetRepeat", {"playerid": 1, "repeat": "off"}, timeout=3.0)
-        else:
-            self.reply(ctx, "/kodi/setLoop", f"unknown_mode: {mode}")
-            return
         self.reply(ctx, "/kodi/setLoop", mode)
 
     def on_discover(self, ctx: OSCContext, *osc_args: Any):
@@ -1176,6 +1233,18 @@ class KodiSyncDaemon:
         self._set_cpu_affinity(masks)
         self.reply(ctx, "/daemon/CPU", *masks)
 
+    def on_restart(self, ctx: OSCContext, *osc_args: Any):
+        self.reply(ctx, "/system/power", 0, "KODI RESTARTING......")
+        self.kodi.call_no_result("Application.Quit")
+
+    def on_reboot(self, ctx: OSCContext, *osc_args: Any):
+        self.reply(ctx, "/system/power", 1, "SYSTEM REBOOTING......")
+        self.kodi.call_no_result("System.Reboot")
+
+    def on_shutdown(self, ctx: OSCContext, *osc_args: Any):
+        self.reply(ctx, "/system/power", 2, "KODI SHUTTING DOWN......")
+        self.kodi.call_no_result("System.Shutdown")
+
     # ── Lifecycle ──
 
     def run(self):
@@ -1184,7 +1253,7 @@ class KodiSyncDaemon:
 
         log.info("starting receiver...")
         self.receiver.start()
-        log.info("daemon running. Ctrl-C to stop.")
+        log.info("multiscreen-sync running. Ctrl-C to stop.")
 
         while not self._stop.is_set():
             self._stop.wait(0.5)

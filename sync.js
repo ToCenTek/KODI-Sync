@@ -25,13 +25,13 @@ function multicastReply(replyPort){
     local.send("/multicast/reply", replyPort);
 }
 
-// 修改组播地址, 提取当前组播成员, 逐个单播新地址, 注意, 必须先发现一次、拿到组成员 IP 表
-// 组播地址范围（IPv4，Class D）：
+// 修改组播地址, 提取当前组播成员, 逐个单播新地址, 注意, 必须先发现一次, 拿到组成员 IP 表
+// 组播地址范围 (IPv4, Class D) :
 // 范围	                            用途	                            能不能用
-// 224.0.0.0 ~ 224.0.0.255	    本地网络控制（OSPF、mDNS、DHCP 等协议用）   ❌ 别用，跟协议冲突
-// 224.0.1.0 ~ 238.255.255.255	公网全局组播	                         ⚠️ 理论上可以，但路由器可能不转发
-// 233.0.0.0/8	                GLOP 组播（AS 号映射）	                 ❌ 公网用
-// 239.0.0.0 ~ 239.255.255.255	管理作用域（私有组播）	                  ✅ 局域网专用，就是干这个的
+// 224.0.0.0 ~ 224.0.0.255	    本地网络控制 (OSPF, mDNS, DHCP 等协议用)    ❌ 别用, 跟协议冲突
+// 224.0.1.0 ~ 238.255.255.255	公网全局组播	                         ⚠️ 理论上可以, 但路由器可能不转发
+// 233.0.0.0/8	                GLOP 组播 (AS 号映射) 	                 ❌ 公网用
+// 239.0.0.0 ~ 239.255.255.255	管理作用域 (私有组播) 	                  ✅ 局域网专用, 就是干这个的
 function multicastHost(host){
     var members = local.values.multicastMembers.members.get();
     var multicastPort = local.parameters.oscOutputs.oscOutput.remotePort.get();
@@ -55,7 +55,7 @@ function multicastHost(host){
     local.values.multicastMembers.setCollapsed(false);
 }
 
-// 修改组播端口, daemon 需要重启, 暂不实现
+// 修改组播端口, 需要重启 multiscreen-sync, 暂不实现
 // 为了防止被修改, 已在初始化阶段设置为只读
 function multicastPort(port){
     local.send("/multicast/port", port);
@@ -71,7 +71,7 @@ function membersManager(memberIP, args) {
     var address = "/member";
     local.sendTo(memberIP, port, address, args);
     script.log(memberIP, port, address, args);
-    
+
     util.delayThreadMS(100);    // 延时
     discoverMulticastMembers();
 }
@@ -103,7 +103,7 @@ function updateMemberContainer() {
         }
     }
     if (!members) return;
-    
+
     // 遍历组成员 IP
     var ips = members.split("\n");
     for (var i = 0; i < ips.length; i++) {
@@ -184,29 +184,29 @@ function getProperties() {
 var p1_ip = "", p1_time = 0;
 var p2_ip = "", p2_time = 0;
 var p3_ip = "", p3_time = 0;
-var syncThreshold = 5;  // ms，超过此值才纠偏
+var syncThreshold = 5;  // ms, 超过此值才纠偏
 function sync(originIp, timeMs) {
     timeMs = parseInt("" + timeMs, 10);
-    
+
     if (p1_ip === "" || p1_ip === originIp) { p1_ip = originIp; p1_time = timeMs; }
     else if (p2_ip === "" || p2_ip === originIp) { p2_ip = originIp; p2_time = timeMs; }
     else { p3_ip = originIp; p3_time = timeMs; }
-    
+
     script.log("sync: " + originIp + "=" + timeMs + " | p1=" + p1_ip + ":" + p1_time + " p2=" + p2_ip + ":" + p2_time + " p3=" + p3_ip + ":" + p3_time);
-    
+
     if (p1_ip === "" || p2_ip === "" || p3_ip === "") { script.log("等待第三台..."); return; }
-    
+
     var maxVal = p1_time;
     var maxIp = p1_ip;
     if (p2_time > maxVal) { maxVal = p2_time; maxIp = p2_ip; }
     if (p3_time > maxVal) { maxVal = p3_time; maxIp = p3_ip; }
-    
+
     script.log("最快: " + maxIp + "=" + maxVal);
-    
+
     if (maxVal - p1_time > syncThreshold && p1_ip !== maxIp) { script.log("纠偏: " + p1_ip); local.send("/alignment_ready", 2, maxVal, p1_ip); }
     if (maxVal - p2_time > syncThreshold && p2_ip !== maxIp) { script.log("纠偏: " + p2_ip); local.send("/alignment_ready", 2, maxVal, p2_ip); }
     if (maxVal - p3_time > syncThreshold && p3_ip !== maxIp) { script.log("纠偏: " + p3_ip); local.send("/alignment_ready", 2, maxVal, p3_ip); }
-    
+
     p1_ip = ""; p1_time = 0;
     p2_ip = ""; p2_time = 0;
     p3_ip = ""; p3_time = 0;
@@ -248,13 +248,13 @@ function oscEvent(address, args, originIp) {
         }
         // 没有重复, 添加 originIp 进 lines
         if (!exists) {
-            lines.push(originIp);   
+            lines.push(originIp);
             var newIP = lines.join("\n");
             if (newIP.length > 0) newIP += "\n";
             members.set(newIP);
         }
         updateMemberContainer();
-    } 
+    }
     if (address === "/kodi/playlist"){
         // var container = local.values.getChild(originIp.split(".").join(""));
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
@@ -262,13 +262,13 @@ function oscEvent(address, args, originIp) {
         util.delayThreadMS(100);    // 延时
         if (!container) return;
         if (typeof args[1] === "string") {
-            // 提示信息（"Please wait..."）
+            // 提示信息 ("Please wait...")
             // container.getChild("Playlist").getChild("Playlist").set("");
             container.getChild("Playlist").getChild("Playlist").set(args[1]);
-            container.setCollapsed(false); 
-            container.getChild("Playlist").setCollapsed(false); 
+            container.setCollapsed(false);
+            container.getChild("Playlist").setCollapsed(false);
         } else {
-            // 完整列表：args[0] = count, 之后每 6 字段一项
+            // 完整列表: args[0] = count, 之后每 6 字段一项
             var count = args[0];
             var lines = [];
             for (var i = 0; i < count; i++) {
@@ -284,11 +284,11 @@ function oscEvent(address, args, originIp) {
             var result = lines.join("\n");
             container.getChild("Playlist").getChild("Playlist").set("");
             container.getChild("Playlist").getChild("Playlist").set(result);
-            container.setCollapsed(false); 
-            container.getChild("Playlist").setCollapsed(false); 
+            container.setCollapsed(false);
+            container.getChild("Playlist").setCollapsed(false);
         }
     }
-    if (address === "/kodi/playlist/state"){ 
+    if (address === "/kodi/playlist/state"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
         var container = local.values.getChild(key); // 在 Values 中找到与 IP 相同的容器
         if (!container) return;
@@ -328,11 +328,11 @@ function oscEvent(address, args, originIp) {
             container.getChild("File").set(file);
             container.getChild("Status").set("");
             container.getChild("Status").set(total_hms + "  |  " + current_ms);
-            container.setCollapsed(false); 
+            container.setCollapsed(false);
         }
     }
     // /kodi/alignment/seek <index> <file> <current_ms> <total_hms>
-    if (address === "/kodi/alignment/seek"){ 
+    if (address === "/kodi/alignment/seek"){
         var file = args[1];
         var current_ms = args[2];
         var total_hms = args[3];
@@ -343,7 +343,7 @@ function oscEvent(address, args, originIp) {
             container.getChild("File").set(file);
             container.getChild("Status").set("");
             container.getChild("Status").set(total_hms + "  |  " + current_ms);
-            container.setCollapsed(false); 
+            container.setCollapsed(false);
         }
     }
     if (address === "/kodi/GetProperties"){
@@ -353,10 +353,10 @@ function oscEvent(address, args, originIp) {
         if (container) {
             container.getChild("Status").set("");
             container.getChild("Status").set(args[1] + "  |  " + args[0]);
-            container.setCollapsed(false); 
+            container.setCollapsed(false);
         }
     }
-    // /kodi/state 0 0 "onAVStarted" "4K_29.97-Chimei-inn-RoastDuck.mp4"
+    // /kodi/state 0, 1, 'onPlayBackStopped', '', 0, '00:00:00.000'
     // isPaused, isStopped 指示灯状态, 事件, 当前文件,自发上报而来
     if (address === "/kodi/state"){
         var key = originIp.split(".").join(""); // 去掉 IP 中的 . 因为 chataigne 内部命名没有 .
@@ -398,7 +398,7 @@ function oscEvent(address, args, originIp) {
         if (args[0] == 1) {
             local.values.alignment.getChild("volume").setAttribute("readOnly", false);
             local.values.alignment.getChild("volume").set(args[1]);
-        } 
+        }
         if (args[0] == 0) {
             local.values.alignment.getChild("volume").setAttribute("readOnly", true);
             local.values.alignment.getChild("volume").set(args[1]);
@@ -460,7 +460,7 @@ function moduleValueChanged(value) {
             var delay = local.values.alignment.getChild("alignmentDelay").get();
             seek(value.get(), delay);
             script.log("seek to time: " + delay);
-        } 
+        }
         if (value.name === "manager") {
             var memberIP = local.values.getChild("multicastMembers").getChild("memberIP").get();
             membersManager(memberIP, value.get());
@@ -506,7 +506,7 @@ function moduleValueChanged(value) {
             local.parameters.setCollapsed(true);
         }
         if (value.name === "play") {    // 恢复播放
-            play(); 
+            play();
             local.values.multicastMembers.setCollapsed(true);
             local.values.powerControl.setCollapsed(true);
             local.parameters.setCollapsed(true);
@@ -529,7 +529,7 @@ function moduleValueChanged(value) {
             local.values.powerControl.setCollapsed(true);
             local.parameters.setCollapsed(true);
         }
-        if (value.name === "getProperties") {   // 查当前时间 ms 
+        if (value.name === "getProperties") {   // 查当前时间 ms
             getProperties();
             local.values.multicastMembers.setCollapsed(true);
             local.values.powerControl.setCollapsed(true);
@@ -547,13 +547,13 @@ function moduleValueChanged(value) {
 //     // sendTick(local.scripts.sync.params.tickTarget.get());
 //     // root.modules.kodiSync.scripts.sync.params.tickTarget
 // }
-function init(){ 
+function init(){
     // local.scripts.sync.updateRate.setAttribute("readOnly", false);
     local.parameters.oscOutputs.oscOutput.remotePort.setAttribute("readOnly", true);
     local.parameters.oscOutputs.oscOutput.remotePort.setAttribute("description", "远程主机的组播/单播监听端口\ndeamon 须重启生效, 所以暂不支持修改\n===============================");
     local.parameters.oscOutputs.oscOutput.remoteHost.setAttribute("description", "组播地址, 要切组, 必须先有组成员\n使用 Discover Multicast Member 发现一次即可\n===============================");
 
-    local.parameters.oscInput.localPort.setAttribute("description", "本机监听端口、组播组成员的上报端口\n修改会通知到组播组以便成员切换\n===============================");
+    local.parameters.oscInput.localPort.setAttribute("description", "本机监听端口, 组播组成员的上报端口\n修改会通知到组播组以便成员切换\n===============================");
 
 
     // var newMetronomeModule = root.modules.getItemWithName("Tick for Sync");
@@ -563,7 +563,7 @@ function init(){
     //         newMetronomeModule.setName("Tick for Sync");
     //     }
     // }
-    
+
     local.scripts.sync.setCollapsed(true);          // 折叠 Scripts.sync
     // local.parameters.getChild("Pass-through").setCollapsed(true);   // 折叠 Pass-Through
     local.parameters.removeContainer("Pass-through"); // 删除 Pass-Through
@@ -591,7 +591,7 @@ function init(){
     // util.showMessageBox("2", "question 2", "", "buttonText");
 
 
-    
+
 }
 
 // function scriptParameterChanged(param) {

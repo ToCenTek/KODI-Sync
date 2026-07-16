@@ -36,7 +36,7 @@
             }
         }
     },
-    
+
     "parameters": {
     },
 
@@ -57,19 +57,19 @@
         "Alignment":{
             "type": "Container",
             "collapsed": true,
-            
+
             "Alignment Ready":{
                 "type": "Trigger",
                 "description": "设置 Index 和 Alignment time 后, 对齐准备\n=====================\nnAlignment Ready"
             },
             "Alignment Time":{
-                "type": "Integer", 
-                "description": "设置对齐时间点, 单位: ms\n=====================\nAlignment time",
-                "default": 1999,
+                "type": "Integer",
+                "description": "设置对齐时间点, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment time",
+                "default": 1102,
                 "min":1
             },
             "Index":{
-                "type": "Integer", 
+                "type": "Integer",
                 "description": "要播放的文件在列表中的索引\n=====================\nIndex",
                 "default": 0,
                 "min":0
@@ -79,9 +79,9 @@
                 "description": "设置 Index 和 Alignment time 后, 对齐播放\n=====================\nnAlignment Play"
             },
             "Alignment Delay":{
-                "type": "Integer", 
-                "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
-                "default": 4999,
+                "type": "Integer",
+                "description": "对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                "default": 3304,
                 "min":0
             },
             "isPaused":{
@@ -95,13 +95,13 @@
             },
             "GetProperties":{
                 "type": "Trigger",
-                "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境、个体差异均会使响应值漂移\n=====================\nState"
+                "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境, 个体差异均会使响应值漂移\n=====================\nState"
             },
             "Alignment Seek":{
                 "type": "Integer",
-                "description": "对齐跳转到指定时间点(ms)\n还会延时 Alignment Delay 时间\n=====================\nSeek",
+                "description": "对齐跳转到指定时间点(ms)\n还会延时 Alignment Delay 时间\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nSeek",
                 "min":1,
-                "default": 9998
+                "default": 13213
             },
             "isStopped":{
                 "type": "Boolean",
@@ -136,10 +136,10 @@
             }
         },
         "Multicast Members":{
-            "type": "Container", 
+            "type": "Container",
             "collapsed": true,
             "Members":{
-                "type": "String", 
+                "type": "String",
                 "description": "已加入的组播组成员\n=====================\nMulticast Group Member",
                 "default": "",
                 "multiline": true,
@@ -214,7 +214,7 @@
                 }
             }
         },
-        "Builder Playlist":{ 
+        "Builder Playlist":{
             "menu": "",
             "description": "构建播放列表\n要使用 ffprobe 查询关键帧, 耗时比较久\n=====================\nBuild Playlist",
             "callback": "buildPlaylist",
@@ -232,9 +232,9 @@
                     "min":0
                 },
                 "Alignment time":{
-                    "type": "Integer", 
-                    "description": "设置对齐时间, 单位: ms",
-                    "default": 1999,
+                    "type": "Integer",
+                    "description": "设置对齐时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment time",
+                    "default": 1102,
                     "min":1
                 }
             }
@@ -251,15 +251,15 @@
                     "min":0
                 },
                 "Alignment Time":{
-                    "type": "Integer", 
-                    "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
-                    "default": 1999,
+                    "type": "Integer",
+                    "description": "设置对齐播放的对齐点, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                    "default": 1102,
                     "min":1
                 },
                 "Alignment Delay":{
-                    "type": "Integer", 
-                    "description": "对齐播放的延迟时间, 单位: ms\n=====================\nAlignment play delay",
-                    "default": 4999,
+                    "type": "Integer",
+                    "description": "设置对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                    "default": 3304,
                     "min":1
                 }
             }
@@ -270,14 +270,14 @@
             "parameters" :{
                 "Time": {
                     "type": "Integer",
-                    "description": "跳转到指定时间点(ms)\n注======================",
-                    "default": 9998,
+                    "description": "跳转到指定时间点(ms)\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n注======================",
+                    "default": 16516,
                     "min":1
                 },
                 "Delay": {
                     "type": "Integer",
-                    "description": "延迟这段时间后, 恢复播放\n=================",
-                    "default": 4999,
+                    "description": "延迟这段时间后, 恢复播放\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=================",
+                    "default": 3304,
                     "min":1
                 }
             }
@@ -294,7 +294,7 @@
         },
         "GetProperties":{
             "menu": "",
-            "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境、个体差异均会使响应值漂移\n=====================\nState",
+            "description": "查询当前时间, 观察同步状态\n仅供参考, 网络环境, 个体差异均会使响应值漂移\n=====================\nState",
             "callback": "getProperties",
             "type": "Trigger"
         },

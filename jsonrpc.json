@@ -662,15 +662,15 @@
 9: 45: 09	OSCModule	4999
 // seek给你传了2个参数, position, delay, 你只执行了position, 忽略了delay,正确做法是,先判断当前是播放态还是暂停态,如果是播放态, 则跳转到position,等onPlayBackSeek事件的到来,收到该事件到来, 立即延时delay时间, 时间到了立即恢复播放,然后查询当前时间上报到'"/kodi/seek", 0 0 "onPlayBackResumed" "当前播放到文件名" "当前时间" "总时长"'(开发文档中曾经被移除了这条上报,现在重新加回来,如果代码中有/kodi/state/seek,则去除,以/kodi/seek为准,记得同步一下各个文档);如果是暂停态, 则跳转到position, 等onPlayBackSeek事件的到来,查询当前时间,上报到'"/kodi/seek", 1 0 "onPlayBackPaused" "当前播放的文件名" "当前时间" "总时长"',忽略delay; 上报参数与/kodi/state对齐,但多追加了"当前时间" "总时长"
 11: 27: 16	CustomLoggerUI	Cleared.
-11: 30: 05	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 30: 05	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
 11: 30: 05	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11: 31: 56	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 31: 56	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
 11: 31: 57	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11: 32: 01	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 32: 01	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
 11: 32: 02	KODI Sync	/kodi/state : 0 0 onAVStarted /storage/videos/huaYao.mp4
-11: 35: 21	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11: 37: 13	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
-11: 37: 18	KODI Sync	/kodi/state : 0 1 onPlayBackStopped 
+11: 35: 21	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
+11: 37: 13	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
+11: 37: 18	KODI Sync	/kodi/state : 0 1 onPlayBackStopped
 11: 40: 53	KODI Sync	Send OSC : /discover
 11: 40: 53	KODI Sync	/daemon/discover : 10.0.0.69 02: 00: 00: 2b:0e: 01 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f
 11: 40: 53	KODI Sync	/daemon/discover : 10.0.0.92 20: 00: 01: 06: 1a:c4 20.5 (20.5.0) Git: 515da9f73607587ecf866b45d44fd371b1b5bf8f

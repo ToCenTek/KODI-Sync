@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OSC 响应格式全面验证测试
-对照 MODIFICATION.md 规范，验证所有 13 种 OSC 上报消息格式。
+对照 MODIFICATION.md 规范, 验证所有 13 种 OSC 上报消息格式.
 """
 import socket
 import struct
@@ -17,7 +17,7 @@ TIMEOUT = 5.0
 # OSC 编码/解码工具
 # ============================================================
 def osc_encode_string(s):
-    """OSC 字符串编码：4 字节对齐"""
+    """OSC 字符串编码: 4 字节对齐"""
     data = s.encode("utf-8") + b"\x00"
     while len(data) % 4 != 0:
         data += b"\x00"
@@ -180,7 +180,7 @@ def validate_playlist_full(addr, args):
         checks.append(args[0] == 1)  # status = 1
         checks.append(isinstance(args[1], int))  # count
         count = args[1]
-        # 每项 6 字段：idx, name, duration_hms, fps, second_idr_ms, last_idr_ms
+        # 每项 6 字段: idx, name, duration_hms, fps, second_idr_ms, last_idr_ms
         expected_len = 2 + count * 6
         checks.append(len(args) == expected_len)
         # 验证每项字段类型
@@ -313,16 +313,16 @@ def run_tests(target_ip):
     print(f"\n{'='*60}")
     print(f"  格式验证测试 - 目标设备: {target_ip}")
     print(f"{'='*60}")
-    
+
     results = []
-    
-    # 创建两个 socket：一个发送，一个接收
+
+    # 创建两个 socket: 一个发送, 一个接收
     send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     send_sock.bind(("", 0))
-    
+
     recv_sock = create_receiver(REPLY_PORT)
-    
+
     # --- 测试 1: /discover ---
     print(f"\n[1/13] 测试 /discover ...")
     send_osc(send_sock, "/discover")
@@ -330,7 +330,7 @@ def run_tests(target_ip):
     passed, detail = validate_discover(addr, args) if addr else (False, "超时无响应")
     results.append(("discover", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 2: /setLoop 查询 ---
     print(f"\n[2/13] 测试 /setLoop (查询模式) ...")
     send_osc(send_sock, "/setLoop", "")
@@ -338,7 +338,7 @@ def run_tests(target_ip):
     passed, detail = validate_set_loop(addr, args) if addr else (False, "超时无响应")
     results.append(("setLoop-query", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 3: /setLoop 设置 ---
     print(f"\n[3/13] 测试 /setLoop (设置 all) ...")
     send_osc(send_sock, "/setLoop", "all")
@@ -346,7 +346,7 @@ def run_tests(target_ip):
     passed, detail = validate_set_loop(addr, args) if addr else (False, "超时无响应")
     results.append(("setLoop-set", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 4: /volume ---
     print(f"\n[4/13] 测试 /volume ...")
     send_osc(send_sock, "/volume", 50)
@@ -354,7 +354,7 @@ def run_tests(target_ip):
     passed, detail = validate_volume(addr, args) if addr else (False, "超时无响应")
     results.append(("volume", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 5: /GetProperties ---
     print(f"\n[5/13] 测试 /GetProperties ...")
     # 先播放一个文件
@@ -366,7 +366,7 @@ def run_tests(target_ip):
     passed, detail = validate_get_properties(addr, args) if addr else (False, "超时无响应")
     results.append(("GetProperties", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 6: /playlist ---
     print(f"\n[6/13] 测试 /playlist ...")
     send_osc(send_sock, "/playlist")
@@ -380,7 +380,7 @@ def run_tests(target_ip):
     results.append(("playlist-full", passed_full, detail_full))
     print(format_result(passed_wait, f"等待消息: {detail_wait}"))
     print(format_result(passed_full, f"完整列表: {detail_full}"))
-    
+
     # --- 测试 7: /cpuAffinity ---
     print(f"\n[7/13] 测试 /cpuAffinity ...")
     send_osc(send_sock, "/cpuAffinity", 0, 0, 0, 1)
@@ -388,7 +388,7 @@ def run_tests(target_ip):
     passed, detail = validate_cpu(addr, args) if addr else (False, "超时无响应")
     results.append(("cpuAffinity", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 8: /member ---
     print(f"\n[8/13] 测试 /member --- ...")
     send_osc(send_sock, "/member", "---")
@@ -396,7 +396,7 @@ def run_tests(target_ip):
     passed, detail = validate_member(addr, args) if addr else (False, "超时无响应")
     results.append(("member", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 9: /stop ---
     print(f"\n[9/13] 测试 /stop (触发 /kodi/state) ...")
     send_osc(send_sock, "/stop")
@@ -404,11 +404,11 @@ def run_tests(target_ip):
     # 检查是否有自发事件
     recv_sock.settimeout(2.0)
     addr, args = receive_osc(recv_sock)
-    passed, detail = validate_kodi_state(addr, args) if addr else (False, "超时无自发事件（可能已是停止状态）")
+    passed, detail = validate_kodi_state(addr, args) if addr else (False, "超时无自发事件 (可能已是停止状态) ")
     results.append(("state-onStop", passed, detail))
     print(format_result(passed, detail))
     recv_sock.settimeout(TIMEOUT)
-    
+
     # --- 测试 10: /play (触发 /kodi/state) ---
     print(f"\n[10/13] 测试 /play (触发 /kodi/state) ...")
     send_osc(send_sock, "/play")
@@ -419,7 +419,7 @@ def run_tests(target_ip):
     results.append(("state-onPlay", passed, detail))
     print(format_result(passed, detail))
     recv_sock.settimeout(TIMEOUT)
-    
+
     # --- 测试 11: /pause (触发 /kodi/state) ---
     print(f"\n[11/13] 测试 /pause (触发 /kodi/state) ...")
     send_osc(send_sock, "/pause")
@@ -430,7 +430,7 @@ def run_tests(target_ip):
     results.append(("state-onPause", passed, detail))
     print(format_result(passed, detail))
     recv_sock.settimeout(TIMEOUT)
-    
+
     # --- 测试 12: /alignment/ready ---
     print(f"\n[12/13] 测试 /alignment/ready ...")
     send_osc(send_sock, "/alignment/ready", 0, 5000)
@@ -438,7 +438,7 @@ def run_tests(target_ip):
     passed, detail = validate_alignment_ready(addr, args) if addr else (False, "超时无响应")
     results.append(("alignment-ready", passed, detail))
     print(format_result(passed, detail))
-    
+
     # --- 测试 13: /seek ---
     print(f"\n[13/13] 测试 /seek (触发 /kodi/alignment/seek) ...")
     send_osc(send_sock, "/seek", 3000)
@@ -446,11 +446,11 @@ def run_tests(target_ip):
     passed, detail = validate_alignment_seek(addr, args) if addr else (False, "超时无响应")
     results.append(("alignment-seek", passed, detail))
     print(format_result(passed, detail))
-    
+
     # 清理
     send_sock.close()
     recv_sock.close()
-    
+
     # 汇总
     print(f"\n{'='*60}")
     print(f"  汇总结果 - {target_ip}")
