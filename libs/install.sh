@@ -31,7 +31,14 @@ PYVER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_in
 SITE="/storage/.local/lib/python$PYVER/site-packages"
 mkdir -p "$SITE"
 rm -f "$SITE/distutils-precedence.pth" 2>/dev/null || true
-for whl in "$DIR"/*.whl; do
+
+if [ "$PYVER" = "3.7" ]; then
+  WHLS="python_osc-1.8.3 websocket_client-1.6.1"
+else
+  WHLS="python_osc-1.10.2 websocket_client-1.9.0 pip-26.1.2"
+fi
+for name in $WHLS; do
+  whl="$DIR/${name}-py3-none-any.whl"
   unzip -o -q "$whl" -d "$SITE"
   echo "      -> $(basename "$whl")"
 done
