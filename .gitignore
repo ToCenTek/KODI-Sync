@@ -19,11 +19,9 @@ dist/
 build/
 service.multiscreen-sync/
 
-# libs/ — track scripts, ignore binaries and extracted artifacts
-libs/ffprobe
+# libs/ — ignore extracted artifacts only
 libs/ffmpeg-*-arm64-static/
 libs/*.tar.xz
-libs/*.whl
 
 # generated / test
 kodi_agent.py
