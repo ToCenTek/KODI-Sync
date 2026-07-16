@@ -11,7 +11,7 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "╔══════════════════════════════════════════╗"
-echo "║        KODI-Sync Agent 一键安装          ║"
+echo "║     Multiscreen Sync daemon 一键安装     ║"
 echo "╚══════════════════════════════════════════╝"
 
 # ---- 1. ffprobe ----
@@ -63,10 +63,11 @@ echo "      -> pid $(pgrep -f daemon.py 2>/dev/null || echo '?')"
 # ---- 完成 ----
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║  安装完成!                                 ║"
+echo "║  安装完成!                               ║"
 echo "║                                          ║"
-echo "║  日志: tail -f /tmp/daemon.log            ║"
-echo "║  停止: pkill -9 -f daemon.py              ║"
-echo "║  前台启动: cd $DIR && python3 daemon.py                                 ║"
-echo "║  后台启动: cd $DIR && nohup python3 daemon.py > /tmp/daemon.log 2>&1 &  ║"                                        ║"
+echo "║  日志: tail -f /tmp/daemon.log           ║"
+echo "║  进程: pgrep -f daemon.py                ║"
+echo "║  停止: pkill -9 -f daemon.py             ║"
+echo "║  前台启动: python3 daemon.py             ║"
+echo "║  后台启动: nohup python3 daemon.py > /tmp/daemon.log 2>&1 &  "
 echo "╚══════════════════════════════════════════╝"
