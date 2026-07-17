@@ -12,7 +12,7 @@ function discoverMulticastMembers() {
     local.send("/discover");
     local.parameters.setCollapsed(true);
     local.values.getChild("multicastMembers").setCollapsed(false); // 展开 Multicast Members
-    local.values.multicastMembers.members.set("");                          // 创建前先清空, 否则不更新
+    local.values.multicastMembers.members.set("");                 // 创建前先清空, 否则不更新
     // local.values.getChild("multicastMembers").getChild("members").set("");  // 创建前先清空, 否则不更新,不同的调用方式
 }
 
@@ -131,25 +131,30 @@ function cleanupMemberContainers() {
     // util.delayThreadMS(200);
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
-    var activeIPs = membersStr.trim().split("\n");  // Array 获取活跃组成员 IP, 换行符分割
-    var containers = local.values.getContainers();  // Array 获取所有容器
+    var activeIPs = membersStr.trim().split("\n");
+    var containers = local.values.getContainers();
+    var staleNames = [];
 
-    for (var i = 0; i < containers.length; i++) {   // 遍历所有容器
+    for (var i = 0; i < containers.length; i++) {
         var child = containers[i];
-        var niceName = child.niceName;  // 以友好名字获取容器名
-        if (!niceName || niceName.indexOf(".") < 0) continue;   // 跳过含有 . 的容器名, 避免误删
+        var niceName = child.niceName;
+        if (!niceName || niceName.indexOf(".") < 0) continue;
 
         var found = false;
         for (var j = 0; j < activeIPs.length; j++) {
-            if (activeIPs[j].trim() === niceName) { // 与活成员 IP 匹配
+            if (activeIPs[j].trim() === niceName) {
                 found = true;
                 break;
             }
         }
         if (found) continue;
 
-        script.log("Member is Leave: " + niceName);
-        local.values.removeContainer(child.name);   
+        staleNames.push(child.name);
+    }
+
+    for (var removeIndex = 0; removeIndex < staleNames.length; removeIndex++) {
+        script.log("Member is Leave: " + staleNames[removeIndex]);
+        local.values.removeContainer(staleNames[removeIndex]);
     }
 }
 
