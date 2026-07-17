@@ -539,8 +539,11 @@ class KodiSyncDaemon:
 
     def _send_osc(self, address: str, *args: Any):
         """Send OSC to the last known report target (for spontaneous events)."""
-        self.sender.send(self._report_addr, reply_port, address, *args)
-        log.info("OSC -> %s to %s:%d args=%s", address, self._report_addr, reply_port, args)
+        target_ip = self._report_addr
+        if self._last_ctx is not None:
+            target_ip = self._last_ctx.source_ip
+        self.sender.send(target_ip, reply_port, address, *args)
+        log.info("OSC -> %s to %s:%d args=%s", address, target_ip, reply_port, args)
 
     @staticmethod
     def _set_cpu_affinity(masks: Tuple[int, ...]):
@@ -1096,7 +1099,7 @@ class KodiSyncDaemon:
 
     def on_playlist(self, ctx: OSCContext, *osc_args: Any):
         self._last_ctx = ctx
-        self._send_osc("/kodi/playlist", 0, "Please wait, ffprobe is processing...")
+        self.reply(ctx, "/kodi/playlist", 0, "Please wait, ffprobe is processing...")
 
         directory = str(osc_args[0]) if (osc_args and osc_args[0]) else VIDEOS_DIR
         threading.Thread(target=self._build_playlist, args=(ctx, directory), daemon=True).start()
