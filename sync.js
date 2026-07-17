@@ -178,7 +178,7 @@ function cleanupMemberContainers() {
         staleNames.push(memberName);
     }
 
-    // 先收集再处理: 删光子项, collapse, 保留空壳
+    // 先收集再删除: 删光子项, 再删父容器
     for (var i = 0; i < staleNames.length; i++) {
         script.log("Member is Leave: " + staleNames[i]);
         var staleKey = staleNames[i].split(".").join("");
@@ -209,8 +209,8 @@ function cleanupMemberContainers() {
             memberContainer.removeContainer(subCons[s].name);
         }
 
-        // 3. 折叠 (不删父容器)
-        memberContainer.setCollapsed(true);
+        // 3. 删父容器 (用 .name 无点)
+        local.values.removeContainer(staleKey);
     }
 }
 
