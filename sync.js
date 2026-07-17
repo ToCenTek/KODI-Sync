@@ -117,7 +117,7 @@ function updateMemberContainer() {
     }
 }
 
-// 清理已离开组播的成员 (标记离开或删除)
+// 清理已离开组播的成员
 function cleanupMemberContainers() {
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
@@ -248,35 +248,26 @@ function oscEvent(address, args, originIp) {
     // /daemon/discover : 10.0.0.88 20:00:01:06:53:1c 20.5.0
     // /daemon/discover : 10.0.0.39 02:00:00:33:15:01 20.5.0
     // /daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
-    if (address === "/daemon/discover"){ // 发现组成员
+    if (address === "/daemon/discover"){ // Discovering group members
+        script.log("discover from: " + originIp);
         var membersContainer = local.values.getChild("multicastMembers").getChild("members");
-        var allMembers = membersContainer.get();
-        script.log("allMembers: " + allMembers);    // 组成员容器中的原始内容
-        // if (typeof allMembers !== 'string') allMembers = "";  // 脏东西洗白成字符串
-        var parts = allMembers.split("\n");     // 以换行符拆分成 Array
+        var rawContent = membersContainer.get();
+        var ipList = rawContent ? rawContent.trim().split("\n") : [];
 
-        var lines = [];
-        for (var i = 0; i < parts.length; i++) {
-            var line = parts[i];
-            if (line.trim() === "") continue;
-            if (line.length > 0) lines.push(line);  // 如果不是空行, 推进 lines
-            script.log("line in parts: " + line);
-        }
-        script.log("lines length: " + lines.length);
-        // 检查 originIp 是否已经存在
-        var exists = false;
-        for (var j = 0; j < lines.length; j++) {
-            if (lines[j] === originIp) {
-                exists = true;
+        // Check if originIp already exists among non-empty lines
+        var alreadyExists = false;
+        for (var memberIndex = 0; memberIndex < ipList.length; memberIndex++) {
+            if (ipList[memberIndex].trim() === originIp) {
+                alreadyExists = true;
                 break;
             }
         }
-        // 没有重复, 添加 originIp 进 lines
-        if (!exists) {
-            lines.push(originIp);
-            var newIP = lines.join("\n");
-            if (newIP.length > 0) newIP += "\n";
-            membersContainer.set(newIP);
+
+        if (!alreadyExists) {
+            ipList.push(originIp);
+            var newContent = ipList.join("\n");
+            if (newContent.length > 0) newContent += "\n";
+            membersContainer.set(newContent);
         }
         updateMemberContainer();
         cleanupMemberContainers();
