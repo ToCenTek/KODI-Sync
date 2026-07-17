@@ -95,13 +95,22 @@ function updateMemberContainer() {
     if (!members) return;
     var ips = members.trim().split("\n");
 
+    // 收集现有 IP 容器名 (脚本名), 避免 getChild 查不到时打印警告
+    var existingContainers = local.values.getContainers();
+    var existingScriptNames = {};
+    for (var containerIndex = 0; containerIndex < existingContainers.length; containerIndex++) {
+        var niceName = existingContainers[containerIndex].niceName;
+        if (niceName && niceName.indexOf(".") >= 0) {
+            existingScriptNames[niceName] = true;
+        }
+    }
+
     for (var memberIndex = 0; memberIndex < ips.length; memberIndex++) {
         var ip = ips[memberIndex].trim();
         if (ip === "") continue;
 
-        var scriptName = ip.split(".").join("");
-        // 检查容器是否已存在
-        if (local.values.getChild(scriptName)) continue;
+        // 检查容器是否已存在 (通过 niceName 查字典, 避免 getChild 报错)
+        if (existingScriptNames[ip]) continue;
 
         var memberContainer = local.values.addContainer(ip);
         memberContainer.setCollapsed(true);
