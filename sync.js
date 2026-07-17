@@ -12,9 +12,8 @@ function discoverMulticastMembers() {
     local.send("/discover");
     local.parameters.setCollapsed(true);
     local.values.getChild("multicastMembers").setCollapsed(false); // 展开 Multicast Members
-    // root.modules.kodiSync.values.multicastMembers.members.set(""); // 创建前先清空, 否则不更新
-    // local.values.multicastMembers.members.set("");                          // 不同的调用方式
-    local.values.getChild("multicastMembers").getChild("members").set("");  // 不同的调用方式
+    local.values.multicastMembers.members.set("");                          // 创建前先清空, 否则不更新
+    // local.values.getChild("multicastMembers").getChild("members").set("");  // 创建前先清空, 否则不更新,不同的调用方式
 }
 
 // 修改本机监听端口, deamon会向新端口上报
@@ -93,35 +92,56 @@ function powerControl(command) {
 // 动态添加组员容器
 function updateMemberContainer() {
     var members = local.values.getChild("multicastMembers").getChild("members").get();
-    // script.logWarning(local.values.getContainers());   // 看看有哪些容器
-    var kids = local.values.getContainers();
-    for (var i = 0; i < kids.length; i++) {
-        var child = kids[i];
-        script.log("child: " + child.niceName); // 得到容器的友好名字, 如10.0.0.92
-        if (child.name === ip) {
-            return;
-        }
-    }
     if (!members) return;
+    var ips = members.trim().split("\n");
 
-    // 遍历组成员 IP
-    var ips = members.split("\n");
     for (var i = 0; i < ips.length; i++) {
         var ip = ips[i].trim();
         if (ip === "") continue;
-        script.log("Member: " + ip);
 
-        var membersContainer = local.values.addContainer(ip);
-        membersContainer.setCollapsed(true);
-        membersContainer.addStringParameter("Status", "当前状态", "-----------------");
-        membersContainer.getChild("Status").setAttribute("readOnly", true);
-        membersContainer.addStringParameter("File", "当前播放的文件路径", "-----------------");
-        membersContainer.getChild("File").setAttribute("readOnly", true);
+        var scriptName = ip.split(".").join("");
+        // 检查容器是否已存在
+        if (local.values.getChild(scriptName)) continue;
 
-        membersContainer.addContainer("Playlist");
-        membersContainer.getChild("Playlist").addStringParameter("Playlist", "Playlist", "-----------------");
-        membersContainer.getChild("Playlist").getChild("Playlist").setAttribute("multiline", true);
-        membersContainer.getChild("Playlist").getChild("Playlist").setAttribute("readOnly", true);
+        var c = local.values.addContainer(ip);
+        c.setCollapsed(true);
+        c.addStringParameter("Status", "当前状态", "-----------------");
+        c.getChild("Status").setAttribute("readOnly", true);
+        c.addStringParameter("File", "当前播放的文件路径", "-----------------");
+        c.getChild("File").setAttribute("readOnly", true);
+
+        var pl = c.addContainer("Playlist");
+        pl.addStringParameter("Playlist", "Playlist", "-----------------");
+        pl.getChild("Playlist").setAttribute("multiline", true);
+        pl.getChild("Playlist").setAttribute("readOnly", true);
+    }
+}
+
+// 删除已离开组播的成员容器
+function cleanupMemberContainers() {
+    var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
+    if (!membersStr) return;
+    var activeIPs = membersStr.trim().split("\n");
+    var kids = local.values.getContainers();
+
+    for (var i = 0; i < kids.length; i++) {
+        var child = kids[i];
+        var niceName = child.niceName;
+        // 跳过非 IP 容器 (如 Alignment、Multicast Members 等)
+        if (!niceName || niceName.indexOf(".") < 0) continue;
+
+        // 检查 niceName 是否仍在活跃成员列表中
+        var found = false;
+        for (var j = 0; j < activeIPs.length; j++) {
+            if (activeIPs[j].trim() === niceName) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            script.log("移除已离开成员容器: " + niceName);
+            local.values.removeContainer(child.name);
+        }
     }
 }
 
@@ -226,18 +246,31 @@ function setLoop(loopmode){
 // /kodi/error <error_code> "<description>"
 // /kodi/status/seek <time_ms>
 function oscEvent(address, args, originIp) {
-    script.log(originIp + " -> " + address + " " + args[0] + " " + args[1]);
+    // script.log(originIp + " -> " + address + " " + args[0] + " " + args[1]);
+    // /daemon/discover : 10.0.0.88 20:00:01:06:53:1c 20.5.0
+    // /daemon/discover : 10.0.0.39 02:00:00:33:15:01 20.5.0
+    // /daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
     if (address === "/daemon/discover"){ // 发现组成员
-        var members = local.values.getChild("multicastMembers").getChild("members");
-        var currentMembers = members.get();
-        if (typeof currentMembers !== 'string') currentMembers = "";  // 脏东西洗白成字符串
-        var parts = currentMembers.split("\n");
+        var membersContainer = local.values.getChild("multicastMembers").getChild("members");
+        var allMembers = membersContainer.get();
+        script.log("allMembers: " + allMembers);    // 组成员容器中的原始内容
+        // if (typeof allMembers !== 'string') allMembers = "";  // 脏东西洗白成字符串
+        var parts = allMembers.split("\n");     // 以换行符拆分成 Array
+        script.log("parts: " + parts);
+        for (var i = 0; i < parts.length; i++){
+            var member = parts[i].trim();
+            if (member === "") continue;
+            script.log("发现组成员: " + i + " : " + member);
+
+        }
         var lines = [];
         for (var i = 0; i < parts.length; i++) {
             var line = parts[i];
             if (line.trim() === "") continue;
             if (line.length > 0) lines.push(line);  // 如果不是空行, 推进 lines
+            script.log("line in parts: " + line);
         }
+        script.log("lines length: " + lines.length);
         // 检查 originIp 是否已经存在
         var exists = false;
         for (var j = 0; j < lines.length; j++) {
@@ -251,9 +284,10 @@ function oscEvent(address, args, originIp) {
             lines.push(originIp);
             var newIP = lines.join("\n");
             if (newIP.length > 0) newIP += "\n";
-            members.set(newIP);
+            membersContainer.set(newIP);
         }
         updateMemberContainer();
+        cleanupMemberContainers();
     }
     if (address === "/kodi/playlist"){
         // var container = local.values.getChild(originIp.split(".").join(""));
@@ -450,7 +484,7 @@ function moduleParameterChanged(param) {
 function moduleValueChanged(value) {
     // 是参数
     if (value.isParameter()){
-        script.log("ValueChanged: " + value.name + " : " + value.get());
+        // script.log("ValueChanged: " + value.name + " : " + value.get());
         if (value.name === "alignmentTime" || value.name === "index") {
             var index = local.values.alignment.getChild("Index").get();
             var position = local.values.alignment.getChild("alignmentTime").get();
