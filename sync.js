@@ -128,6 +128,7 @@ function updateMemberContainer() {
 
 // 清理已离开组播的成员
 function cleanupMemberContainers() {
+    util.delayThreadMS(200);
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
     var activeIPs = membersStr.trim().split("\n");
@@ -278,9 +279,8 @@ function oscEvent(address, args, originIp) {
             var newContent = ipList.join("\n");
             if (newContent.length > 0) newContent += "\n";
             membersContainer.set(newContent);
-        }
         updateMemberContainer();
-        // cleanupMemberContainers(); // 不在此执行, 等所有成员回复完毕再手动调用
+        cleanupMemberContainers();
     }
     if (address === "/kodi/playlist"){
         // var container = local.values.getChild(originIp.split(".").join(""));
