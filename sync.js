@@ -154,17 +154,10 @@ function cleanupMemberContainers() {
         staleNames.push(memberName);
     }
 
-    // 清空内容并折叠, 替代 removeContainer (含子容器时会导致卡死)
+    // 先收集再删除, 传 niceName (带点, 如 10.0.0.69), 传 script name 会卡死
     for (var i = 0; i < staleNames.length; i++) {
-        var staleScriptName = staleNames[i].split(".").join("");
         script.log("Member is Leave: " + staleNames[i]);
-        var staleContainer = local.values.getChild(staleScriptName);
-        if (!staleContainer) continue;
-        var statusParam = staleContainer.getChild("Status");
-        if (statusParam) statusParam.set("--- 已离开 ---");
-        var fileParam = staleContainer.getChild("File");
-        if (fileParam) fileParam.set("");
-        staleContainer.setCollapsed(true);
+        local.values.removeContainer(staleNames[i]);
     }
 }
 
