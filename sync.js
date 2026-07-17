@@ -131,28 +131,28 @@ function cleanupMemberContainers() {
     // util.delayThreadMS(200);
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
-    var activeIPs = membersStr.trim().split("\n");
-    var containers = local.values.getContainers();
+    var activeIPs = membersStr.trim().split("\n");  // Array: 获取活跃的组成员 IP, \n 分割
+    var containers = local.values.getContainers();  // Array: 获取所有容器
     var staleNames = [];
 
     for (var i = 0; i < containers.length; i++) {
-        var child = containers[i];
-        var niceName = child.niceName;
-        if (!niceName || niceName.indexOf(".") < 0) continue;
+        var child = containers[i];        // 获取子容器
+        var niceName = child.niceName;    // 获取子容器的 niceName
+        if (!niceName || niceName.indexOf(".") < 0) continue;   // 忽略非成员容器
 
         var found = false;
         for (var j = 0; j < activeIPs.length; j++) {
-            if (activeIPs[j].trim() === niceName) {
+            if (activeIPs[j].trim() === niceName) { // 跳过与活跃成员匹配的 IP
                 found = true;
                 break;
             }
         }
         if (found) continue;
 
-        staleNames.push(child.name);
+        staleNames.push(child.niceName);    // 添加到待删除数组
     }
 
-    for (var i = 0; i < staleNames.length; i++) {
+    for (var i = 0; i < staleNames.length; i++) {   // 逐一删除已离开的成员容器
         script.log("Member is Leave: " + staleNames[i]);
         local.values.removeContainer(staleNames[i]);
     }
