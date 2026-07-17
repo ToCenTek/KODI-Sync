@@ -149,7 +149,7 @@ function cleanupMemberContainers() {
         }
         if (found) continue;
 
-        staleNames.push(container.name);
+        staleNames.push(niceName);
     }
 
     for (var i = 0; i < staleNames.length; i++) {
