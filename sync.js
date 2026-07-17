@@ -95,25 +95,25 @@ function updateMemberContainer() {
     if (!members) return;
     var ips = members.trim().split("\n");
 
-    for (var i = 0; i < ips.length; i++) {
-        var ip = ips[i].trim();
+    for (var memberIndex = 0; memberIndex < ips.length; memberIndex++) {
+        var ip = ips[memberIndex].trim();
         if (ip === "") continue;
 
         var scriptName = ip.split(".").join("");
         // 检查容器是否已存在
         if (local.values.getChild(scriptName)) continue;
 
-        var c = local.values.addContainer(ip);
-        c.setCollapsed(true);
-        c.addStringParameter("Status", "当前状态", "-----------------");
-        c.getChild("Status").setAttribute("readOnly", true);
-        c.addStringParameter("File", "当前播放的文件路径", "-----------------");
-        c.getChild("File").setAttribute("readOnly", true);
+        var memberContainer = local.values.addContainer(ip);
+        memberContainer.setCollapsed(true);
+        memberContainer.addStringParameter("Status", "当前状态", "-----------------");
+        memberContainer.getChild("Status").setAttribute("readOnly", true);
+        memberContainer.addStringParameter("File", "当前播放的文件路径", "-----------------");
+        memberContainer.getChild("File").setAttribute("readOnly", true);
 
-        var pl = c.addContainer("Playlist");
-        pl.addStringParameter("Playlist", "Playlist", "-----------------");
-        pl.getChild("Playlist").setAttribute("multiline", true);
-        pl.getChild("Playlist").setAttribute("readOnly", true);
+        var playlistContainer = memberContainer.addContainer("Playlist");
+        playlistContainer.addStringParameter("Playlist", "Playlist", "-----------------");
+        playlistContainer.getChild("Playlist").setAttribute("multiline", true);
+        playlistContainer.getChild("Playlist").setAttribute("readOnly", true);
     }
 }
 
@@ -122,18 +122,18 @@ function cleanupMemberContainers() {
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
     var activeIPs = membersStr.trim().split("\n");
-    var kids = local.values.getContainers();
+    var containers = local.values.getContainers();
 
-    for (var i = 0; i < kids.length; i++) {
-        var child = kids[i];
+    for (var containerIndex = 0; containerIndex < containers.length; containerIndex++) {
+        var child = containers[containerIndex];
         var niceName = child.niceName;
         // 跳过非 IP 容器 (如 Alignment、Multicast Members 等)
         if (!niceName || niceName.indexOf(".") < 0) continue;
 
         // 检查 niceName 是否仍在活跃成员列表中
         var found = false;
-        for (var j = 0; j < activeIPs.length; j++) {
-            if (activeIPs[j].trim() === niceName) {
+        for (var innerIndex = 0; innerIndex < activeIPs.length; innerIndex++) {
+            if (activeIPs[innerIndex].trim() === niceName) {
                 found = true;
                 break;
             }
