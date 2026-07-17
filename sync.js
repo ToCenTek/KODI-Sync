@@ -152,9 +152,9 @@ function cleanupMemberContainers() {
         staleNames.push(child.name);
     }
 
-    for (var removeIndex = 0; removeIndex < staleNames.length; removeIndex++) {
-        script.log("Member is Leave: " + staleNames[removeIndex]);
-        local.values.removeContainer(staleNames[removeIndex]);
+    for (var i = 0; i < staleNames.length; i++) {
+        script.log("Member is Leave: " + staleNames[i]);
+        local.values.removeContainer(staleNames[i]);
     }
 }
 
