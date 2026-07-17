@@ -117,7 +117,7 @@ function updateMemberContainer() {
     }
 }
 
-// 删除已离开组播的成员容器
+// 清理已离开组播的成员 (标记离开或删除)
 function cleanupMemberContainers() {
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
@@ -138,8 +138,13 @@ function cleanupMemberContainers() {
         }
         if (found) continue;
 
-        // 标记为离开状态而非删除, 避免 removeContainer 卡死
         script.log("成员已离开: " + niceName);
+        //
+        // ── 删除容器 ──
+        // 解除注释下行即可启用删除 (注释掉下方的标记代码):
+        //   local.values.removeContainer(child.name);
+        //
+        // ── 标记离开 (备选, 不删除) ──
         var statusParam = child.getChild("Status");
         if (statusParam) statusParam.set("--- 已离开 ---");
         var fileParam = child.getChild("File");
