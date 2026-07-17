@@ -123,15 +123,12 @@ function cleanupMemberContainers() {
     if (!membersStr) return;
     var activeIPs = membersStr.trim().split("\n");
     var containers = local.values.getContainers();
-    var staleNames = [];
 
     for (var containerIndex = 0; containerIndex < containers.length; containerIndex++) {
         var child = containers[containerIndex];
         var niceName = child.niceName;
-        // 跳过非 IP 容器 (如 Alignment、Multicast Members 等)
         if (!niceName || niceName.indexOf(".") < 0) continue;
 
-        // 检查 niceName 是否仍在活跃成员列表中
         var found = false;
         for (var innerIndex = 0; innerIndex < activeIPs.length; innerIndex++) {
             if (activeIPs[innerIndex].trim() === niceName) {
@@ -139,15 +136,19 @@ function cleanupMemberContainers() {
                 break;
             }
         }
-        if (!found) {
-            staleNames.push(child.name);
-        }
-    }
+        if (found) continue;
 
-    // 迭代结束后再统一删除，避免遍历时修改集合
-    for (var removeIndex = 0; removeIndex < staleNames.length; removeIndex++) {
-        script.log("移除已离开成员容器: " + staleNames[removeIndex]);
-        local.values.removeContainer(staleNames[removeIndex]);
+        // 标记为离开状态而非删除, 避免 removeContainer 卡死
+        script.log("成员已离开: " + niceName);
+        try {
+            var statusParam = child.getChild("Status");
+            if (statusParam) statusParam.set("--- 已离开 ---");
+            var fileParam = child.getChild("File");
+            if (fileParam) fileParam.set("");
+            child.setCollapsed(true);
+        } catch (error) {
+            script.log("标记离开状态失败: " + error);
+        }
     }
 }
 
