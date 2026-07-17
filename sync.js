@@ -248,13 +248,13 @@ function oscEvent(address, args, originIp) {
     // /daemon/discover : 10.0.0.88 20:00:01:06:53:1c 20.5.0
     // /daemon/discover : 10.0.0.39 02:00:00:33:15:01 20.5.0
     // /daemon/discover : 10.0.0.69 02:00:00:2b:0e:01 20.5.0
-    if (address === "/daemon/discover"){ // Discovering group members
+    if (address === "/daemon/discover"){ // 发现组成员
         script.log("discover from: " + originIp);
         var membersContainer = local.values.getChild("multicastMembers").getChild("members");
         var rawContent = membersContainer.get();
         var ipList = rawContent ? rawContent.trim().split("\n") : [];
 
-        // Check if originIp already exists among non-empty lines
+        // 检查 originIp 是否已在列表中
         var alreadyExists = false;
         for (var memberIndex = 0; memberIndex < ipList.length; memberIndex++) {
             if (ipList[memberIndex].trim() === originIp) {
@@ -263,6 +263,7 @@ function oscEvent(address, args, originIp) {
             }
         }
 
+        // 没有重复则追加
         if (!alreadyExists) {
             ipList.push(originIp);
             var newContent = ipList.join("\n");
