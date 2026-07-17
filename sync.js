@@ -138,18 +138,8 @@ function cleanupMemberContainers() {
         }
         if (found) continue;
 
-        script.log("成员已离开: " + niceName);
-        //
-        // ── 删除容器 ──
-        // 解除注释下行即可启用删除 (注释掉下方的标记代码):
-        //   local.values.removeContainer(child.name);
-        //
-        // ── 标记离开 (备选, 不删除) ──
-        var statusParam = child.getChild("Status");
-        if (statusParam) statusParam.set("--- 已离开 ---");
-        var fileParam = child.getChild("File");
-        if (fileParam) fileParam.set("");
-        child.setCollapsed(true);
+        script.log("Member is Leave: " + niceName);
+        local.values.removeContainer(child.name);
     }
 }
 
@@ -264,13 +254,7 @@ function oscEvent(address, args, originIp) {
         script.log("allMembers: " + allMembers);    // 组成员容器中的原始内容
         // if (typeof allMembers !== 'string') allMembers = "";  // 脏东西洗白成字符串
         var parts = allMembers.split("\n");     // 以换行符拆分成 Array
-        script.log("parts: " + parts);
-        for (var i = 0; i < parts.length; i++){
-            var member = parts[i].trim();
-            if (member === "") continue;
-            script.log("发现组成员: " + i + " : " + member);
 
-        }
         var lines = [];
         for (var i = 0; i < parts.length; i++) {
             var line = parts[i];
