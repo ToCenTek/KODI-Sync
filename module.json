@@ -64,7 +64,7 @@
             },
             "Alignment Time":{
                 "type": "Integer",
-                "description": "设置对齐时间点, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment time",
+                "description": "设置对齐时间点, 单位: ms\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nAlignment time",
                 "default": 1102,
                 "min":1
             },
@@ -80,7 +80,7 @@
             },
             "Alignment Delay":{
                 "type": "Integer",
-                "description": "对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                "description": "对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nAlignment play delay",
                 "default": 3304,
                 "min":0
             },
@@ -99,7 +99,7 @@
             },
             "Alignment Seek":{
                 "type": "Integer",
-                "description": "对齐跳转到指定时间点(ms)\n还会延时 Alignment Delay 时间\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nSeek",
+                "description": "对齐跳转到指定时间点(ms),\n还会延时 Alignment Delay 时间\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nSeek",
                 "min":1,
                 "default": 13213
             },
@@ -114,7 +114,7 @@
             },
             "Loop":{
                 "type": "Enum",
-                "description": "循环模式\n--- : 查询当前模式\n=====================\nLoop Mode.",
+                "description": "循环模式: All/One/Off\n--- : 查询当前模式\n=====================\nLoop Mode.",
                 "options": {
                     "---": "---",
                     "All": "RepeatAll",
@@ -152,7 +152,7 @@
             },
             "Manager":{
                 "type": "Enum",
-                "description": "使成员加入或离开组播组\n====================\nMulticast Group Manager",
+                "description": "使成员加入或离开组播组\n---: 查询成员在组情况\n====================\nMulticast Group Manager",
                 "options": {
                     "---": "---",
                     "Join": "join",
@@ -233,7 +233,7 @@
                 },
                 "Alignment time":{
                     "type": "Integer",
-                    "description": "设置对齐时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment time",
+                    "description": "设置对齐时间, 单位: ms\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nAlignment time",
                     "default": 1102,
                     "min":1
                 }
@@ -252,13 +252,13 @@
                 },
                 "Alignment Time":{
                     "type": "Integer",
-                    "description": "设置对齐播放的对齐点, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                    "description": "设置对齐播放的对齐点, 单位: ms\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nAlignment play delay",
                     "default": 1102,
                     "min":1
                 },
                 "Alignment Delay":{
                     "type": "Integer",
-                    "description": "设置对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=====================\nAlignment play delay",
+                    "description": "设置对齐播放的延迟时间, 单位: ms\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=====================\nAlignment play delay",
                     "default": 3304,
                     "min":1
                 }
@@ -270,13 +270,13 @@
             "parameters" :{
                 "Time": {
                     "type": "Integer",
-                    "description": "跳转到指定时间点(ms)\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n注======================",
+                    "description": "跳转到指定时间点(ms)\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n注======================",
                     "default": 16516,
                     "min":1
                 },
                 "Delay": {
                     "type": "Integer",
-                    "description": "延迟这段时间后, 恢复播放\n设置一个 GOP 的整数倍 + 1(或稍大) 能得到较好的对齐结果\n=================",
+                    "description": "延迟这段时间后, 恢复播放\n设置一个 GOP 的整数倍 + 1 或稍大,\n能得到较好的对齐结果\n=================",
                     "default": 3304,
                     "min":1
                 }

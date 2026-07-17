@@ -128,20 +128,20 @@ function updateMemberContainer() {
 
 // 清理已离开组播的成员
 function cleanupMemberContainers() {
-    util.delayThreadMS(200);
+    // util.delayThreadMS(200);
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
-    var activeIPs = membersStr.trim().split("\n");
-    var containers = local.values.getContainers();
+    var activeIPs = membersStr.trim().split("\n");  // Array 获取活跃组成员 IP, 换行符分割
+    var containers = local.values.getContainers();  // Array 获取所有容器
 
-    for (var containerIndex = 0; containerIndex < containers.length; containerIndex++) {
-        var child = containers[containerIndex];
-        var niceName = child.niceName;
-        if (!niceName || niceName.indexOf(".") < 0) continue;
+    for (var i = 0; i < containers.length; i++) {   // 遍历所有容器
+        var child = containers[i];
+        var niceName = child.niceName;  // 以友好名字获取容器名
+        if (!niceName || niceName.indexOf(".") < 0) continue;   // 跳过含有 . 的容器名, 避免误删
 
         var found = false;
-        for (var innerIndex = 0; innerIndex < activeIPs.length; innerIndex++) {
-            if (activeIPs[innerIndex].trim() === niceName) {
+        for (var j = 0; j < activeIPs.length; j++) {
+            if (activeIPs[j].trim() === niceName) { // 与活成员 IP 匹配
                 found = true;
                 break;
             }
