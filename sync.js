@@ -279,6 +279,7 @@ function oscEvent(address, args, originIp) {
             var newContent = ipList.join("\n");
             if (newContent.length > 0) newContent += "\n";
             membersContainer.set(newContent);
+        }
         updateMemberContainer();
         cleanupMemberContainers();
     }
