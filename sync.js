@@ -280,7 +280,7 @@ function oscEvent(address, args, originIp) {
             membersContainer.set(newContent);
         }
         updateMemberContainer();
-        cleanupMemberContainers();
+        // cleanupMemberContainers(); // 不在此执行, 等所有成员回复完毕再手动调用
     }
     if (address === "/kodi/playlist"){
         // var container = local.values.getChild(originIp.split(".").join(""));
