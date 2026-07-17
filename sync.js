@@ -123,6 +123,7 @@ function cleanupMemberContainers() {
     if (!membersStr) return;
     var activeIPs = membersStr.trim().split("\n");
     var containers = local.values.getContainers();
+    var staleNames = [];
 
     for (var containerIndex = 0; containerIndex < containers.length; containerIndex++) {
         var child = containers[containerIndex];
@@ -139,9 +140,14 @@ function cleanupMemberContainers() {
             }
         }
         if (!found) {
-            script.log("移除已离开成员容器: " + niceName);
-            local.values.removeContainer(child.name);
+            staleNames.push(child.name);
         }
+    }
+
+    // 迭代结束后再统一删除，避免遍历时修改集合
+    for (var removeIndex = 0; removeIndex < staleNames.length; removeIndex++) {
+        script.log("移除已离开成员容器: " + staleNames[removeIndex]);
+        local.values.removeContainer(staleNames[removeIndex]);
     }
 }
 
