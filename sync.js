@@ -90,27 +90,28 @@ function powerControl(command) {
     local.send(command);
 }
 // 动态添加组员容器
+// 为所有活跃成员创建容器 (如不存在)
 function updateMemberContainer() {
     var members = local.values.getChild("multicastMembers").getChild("members").get();
     if (!members) return;
     var ips = members.trim().split("\n");
 
-    // 收集现有 IP 容器名 (友好名), 避免 getChild 查不到时打印警告
+    // 构建现有 IP 容器字典, 避免用 getChild 查不存在的容器触发警告
     var existingContainers = local.values.getContainers();
-    var existingScriptNames = {};
+    var existingMembers = {};
     for (var i = 0; i < existingContainers.length; i++) {
         var memberName = existingContainers[i].niceName;
         if (memberName && memberName.indexOf(".") >= 0) {
-            existingScriptNames[memberName] = true;
+            existingMembers[memberName] = true;
         }
     }
 
+    // 遍历活跃 IP, 缺少容器则创建
     for (var j = 0; j < ips.length; j++) {
         var ip = ips[j].trim();
         if (ip === "") continue;
 
-        // 检查容器是否已存在 (通过 niceName 查字典, 避免 getChild 报错)
-        if (existingScriptNames[ip]) continue;
+        if (existingMembers[ip]) continue;
 
         var memberContainer = local.values.addContainer(ip);
         memberContainer.setCollapsed(true);
@@ -126,15 +127,16 @@ function updateMemberContainer() {
     }
 }
 
-// 清理已离开组播的成员
+// 删除活跃列表中不存在的成员容器
 function cleanupMemberContainers() {
     // util.delayThreadMS(200);
     var membersStr = local.values.getChild("multicastMembers").getChild("members").get();
     if (!membersStr) return;
-    var activeIPs = membersStr.trim().split("\n");  // Array: 获取活跃的组成员 IP, \n 分割
-    var containers = local.values.getContainers();  // Array: 获取所有容器
+    var activeIPs = membersStr.trim().split("\n");
+    var containers = local.values.getContainers();
     var staleNames = [];
 
+    // 遍历容器, 找出不在 activeIPs 中的 IP 容器
     for (var i = 0; i < containers.length; i++) {
         var container = containers[i];
         var memberName = container.niceName;
@@ -152,6 +154,7 @@ function cleanupMemberContainers() {
         staleNames.push(memberName);
     }
 
+    // 先收集再删除, 避免边遍历边删导致集合变更
     for (var i = 0; i < staleNames.length; i++) {
         script.log("Member is Leave: " + staleNames[i]);
         local.values.removeContainer(staleNames[i]);
