@@ -95,18 +95,18 @@ function updateMemberContainer() {
     if (!members) return;
     var ips = members.trim().split("\n");
 
-    // 收集现有 IP 容器名 (脚本名), 避免 getChild 查不到时打印警告
+    // 收集现有 IP 容器名 (友好名), 避免 getChild 查不到时打印警告
     var existingContainers = local.values.getContainers();
     var existingScriptNames = {};
-    for (var containerIndex = 0; containerIndex < existingContainers.length; containerIndex++) {
-        var niceName = existingContainers[containerIndex].niceName;
+    for (var i = 0; i < existingContainers.length; i++) {
+        var niceName = existingContainers[i].niceName;
         if (niceName && niceName.indexOf(".") >= 0) {
             existingScriptNames[niceName] = true;
         }
     }
 
-    for (var memberIndex = 0; memberIndex < ips.length; memberIndex++) {
-        var ip = ips[memberIndex].trim();
+    for (var j = 0; j < ips.length; j++) {
+        var ip = ips[j].trim();
         if (ip === "") continue;
 
         // 检查容器是否已存在 (通过 niceName 查字典, 避免 getChild 报错)
@@ -149,7 +149,7 @@ function cleanupMemberContainers() {
         if (found) continue;
 
         script.log("Member is Leave: " + niceName);
-        local.values.removeContainer(child.name);
+        local.values.removeContainer(child.name);   
     }
 }
 
