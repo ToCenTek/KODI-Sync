@@ -1099,7 +1099,7 @@ class KodiSyncDaemon:
 
     def on_playlist(self, ctx: OSCContext, *osc_args: Any):
         self._last_ctx = ctx
-        self.reply(ctx, "/kodi/playlist", 0, "Please wait, ffprobe is processing...")
+        self.reply(ctx, "/kodi/playlist", 0, "PLEASE WAIT, FFPROBE IS PROCESSING...")
 
         directory = str(osc_args[0]) if (osc_args and osc_args[0]) else VIDEOS_DIR
         threading.Thread(target=self._build_playlist, args=(ctx, directory), daemon=True).start()
