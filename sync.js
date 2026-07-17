@@ -136,23 +136,23 @@ function cleanupMemberContainers() {
     var staleNames = [];
 
     for (var i = 0; i < containers.length; i++) {
-        var child = containers[i];        // 获取子容器
-        var niceName = child.niceName;    // 获取子容器的 niceName
-        if (!niceName || niceName.indexOf(".") < 0) continue;   // 忽略非成员容器
+        var container = containers[i];
+        var niceName = container.niceName;
+        if (!niceName || niceName.indexOf(".") < 0) continue;
 
         var found = false;
         for (var j = 0; j < activeIPs.length; j++) {
-            if (activeIPs[j].trim() === niceName) { // 跳过与活跃成员匹配的 IP
+            if (activeIPs[j].trim() === niceName) {
                 found = true;
                 break;
             }
         }
         if (found) continue;
 
-        staleNames.push(child.niceName);    // 添加到待删除数组
+        staleNames.push(niceName);
     }
 
-    for (var i = 0; i < staleNames.length; i++) {   // 逐一删除已离开的成员容器
+    for (var i = 0; i < staleNames.length; i++) {
         script.log("Member is Leave: " + staleNames[i]);
         local.values.removeContainer(staleNames[i]);
     }
