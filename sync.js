@@ -99,9 +99,9 @@ function updateMemberContainer() {
     var existingContainers = local.values.getContainers();
     var existingScriptNames = {};
     for (var i = 0; i < existingContainers.length; i++) {
-        var niceName = existingContainers[i].niceName;
-        if (niceName && niceName.indexOf(".") >= 0) {
-            existingScriptNames[niceName] = true;
+        var friendlyName = existingContainers[i].niceName;
+        if (friendlyName && friendlyName.indexOf(".") >= 0) {
+            existingScriptNames[friendlyName] = true;
         }
     }
 
@@ -137,19 +137,19 @@ function cleanupMemberContainers() {
 
     for (var i = 0; i < containers.length; i++) {
         var container = containers[i];
-        var niceName = container.niceName;
-        if (!niceName || niceName.indexOf(".") < 0) continue;
+        var friendlyName = container.niceName;
+        if (!friendlyName || friendlyName.indexOf(".") < 0) continue;
 
         var found = false;
         for (var j = 0; j < activeIPs.length; j++) {
-            if (activeIPs[j].trim() === niceName) {
+            if (activeIPs[j].trim() === friendlyName) {
                 found = true;
                 break;
             }
         }
         if (found) continue;
 
-        staleNames.push(niceName);
+        staleNames.push(friendlyName);
     }
 
     for (var i = 0; i < staleNames.length; i++) {
