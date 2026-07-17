@@ -140,15 +140,11 @@ function cleanupMemberContainers() {
 
         // 标记为离开状态而非删除, 避免 removeContainer 卡死
         script.log("成员已离开: " + niceName);
-        try {
-            var statusParam = child.getChild("Status");
-            if (statusParam) statusParam.set("--- 已离开 ---");
-            var fileParam = child.getChild("File");
-            if (fileParam) fileParam.set("");
-            child.setCollapsed(true);
-        } catch (error) {
-            script.log("标记离开状态失败: " + error);
-        }
+        var statusParam = child.getChild("Status");
+        if (statusParam) statusParam.set("--- 已离开 ---");
+        var fileParam = child.getChild("File");
+        if (fileParam) fileParam.set("");
+        child.setCollapsed(true);
     }
 }
 
