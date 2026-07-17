@@ -89,41 +89,65 @@ function buildPlaylist() {
 function powerControl(command) {
     local.send(command);
 }
-// 动态添加组员容器
-// 为所有活跃成员创建容器 (如不存在)
+// 动态添加组员容器, 已存在则补齐子参数
 function updateMemberContainer() {
     var members = local.values.getChild("multicastMembers").getChild("members").get();
     if (!members) return;
     var ips = members.trim().split("\n");
 
-    // 构建现有 IP 容器字典, 避免用 getChild 查不存在的容器触发警告
-    var existingContainers = local.values.getContainers();
-    var existingMembers = {};
-    for (var i = 0; i < existingContainers.length; i++) {
-        var memberName = existingContainers[i].niceName;
-        if (memberName && memberName.indexOf(".") >= 0) {
-            existingMembers[memberName] = true;
+    // 遍历现有容器, 按 niceName 索引
+    var existingByNiceName = {};
+    var existingByName = {};
+    var containers = local.values.getContainers();
+    for (var i = 0; i < containers.length; i++) {
+        var c = containers[i];
+        if (c.niceName && c.niceName.indexOf(".") >= 0) {
+            existingByNiceName[c.niceName] = c;
+            existingByName[c.name] = c;
         }
     }
 
-    // 遍历活跃 IP, 缺少容器则创建
     for (var j = 0; j < ips.length; j++) {
         var ip = ips[j].trim();
         if (ip === "") continue;
 
-        if (existingMembers[ip]) continue;
+        var memberContainer = existingByNiceName[ip];
+        if (!memberContainer) {
+            memberContainer = local.values.addContainer(ip);
+            if (!memberContainer) continue;
+            script.log("Created container for " + ip);
+        }
 
-        var memberContainer = local.values.addContainer(ip);
         memberContainer.setCollapsed(true);
-        memberContainer.addStringParameter("Status", "当前状态", "-----------------");
-        memberContainer.getChild("Status").setAttribute("readOnly", true);
-        memberContainer.addStringParameter("File", "当前播放的文件路径", "-----------------");
-        memberContainer.getChild("File").setAttribute("readOnly", true);
 
-        var playlistContainer = memberContainer.addContainer("Playlist");
-        playlistContainer.addStringParameter("Playlist", "Playlist", "-----------------");
-        playlistContainer.getChild("Playlist").setAttribute("multiline", true);
-        playlistContainer.getChild("Playlist").setAttribute("readOnly", true);
+        // 补全缺失的参数
+        var curParams = memberContainer.getControllables(true, false);
+        var hasStatus = false, hasFile = false;
+        for (var p = 0; p < curParams.length; p++) {
+            if (curParams[p].name === "Status") hasStatus = true;
+            if (curParams[p].name === "File") hasFile = true;
+        }
+        if (!hasStatus) {
+            var statusParam = memberContainer.addStringParameter("Status", "当前状态", "-----------------");
+            statusParam.setAttribute("readOnly", true);
+        }
+        if (!hasFile) {
+            var fileParam = memberContainer.addStringParameter("File", "当前播放的文件路径", "-----------------");
+            fileParam.setAttribute("readOnly", true);
+        }
+
+        // 补全缺失的子容器
+        var curSubs = memberContainer.getContainers();
+        var hasPlaylist = false;
+        for (var s = 0; s < curSubs.length; s++) {
+            if (curSubs[s].name === "Playlist") hasPlaylist = true;
+        }
+        if (!hasPlaylist) {
+            var pl = memberContainer.addContainer("Playlist");
+            var plParam = pl.addStringParameter("Playlist", "Playlist", "-----------------");
+            plParam.setAttribute("multiline", true);
+            plParam.setAttribute("readOnly", true);
+        }
     }
 }
 
@@ -154,10 +178,39 @@ function cleanupMemberContainers() {
         staleNames.push(memberName);
     }
 
-    // 先收集再删除, 传 niceName (带点, 如 10.0.0.69), 传 script name 会卡死
+    // 先收集再处理: 删光子项, collapse, 保留空壳
     for (var i = 0; i < staleNames.length; i++) {
         script.log("Member is Leave: " + staleNames[i]);
-        local.values.removeContainer(staleNames[i]);
+        var staleKey = staleNames[i].split(".").join("");
+
+        // 遍历 containers 找到匹配的容器对象 (避免 getChild)
+        var memberContainer = null;
+        for (var k = 0; k < containers.length; k++) {
+            if (containers[k].name === staleKey) {
+                memberContainer = containers[k];
+                break;
+            }
+        }
+        if (!memberContainer) continue;
+
+        // 1. 删所有参数
+        var params = memberContainer.getControllables(true, false);
+        for (var p = 0; p < params.length; p++) {
+            memberContainer.removeParameter(params[p].name);
+        }
+
+        // 2. 删所有子容器 (先删子容器的参数)
+        var subCons = memberContainer.getContainers();
+        for (var s = 0; s < subCons.length; s++) {
+            var subParams = subCons[s].getControllables(true, false);
+            for (var sp = 0; sp < subParams.length; sp++) {
+                subCons[s].removeParameter(subParams[sp].name);
+            }
+            memberContainer.removeContainer(subCons[s].name);
+        }
+
+        // 3. 折叠 (不删父容器)
+        memberContainer.setCollapsed(true);
     }
 }
 
@@ -290,6 +343,8 @@ function oscEvent(address, args, originIp) {
         }
         updateMemberContainer();
         cleanupMemberContainers();
+        // 展开 Multicast Members, 不构建列表
+        local.values.getChild("multicastMembers").setCollapsed(false);
     }
     if (address === "/kodi/playlist"){
         // var container = local.values.getChild(originIp.split(".").join(""));
@@ -297,12 +352,14 @@ function oscEvent(address, args, originIp) {
         var container = local.values.getChild(key); // 在 Values 中找到与 IP 相同的容器
         util.delayThreadMS(100);    // 延时
         if (!container) return;
+        var pl = container.getChild("Playlist");
+        if (!pl) return;
         if (typeof args[1] === "string") {
             // 提示信息 ("Please wait...")
             // container.getChild("Playlist").getChild("Playlist").set("");
-            container.getChild("Playlist").getChild("Playlist").set(args[1]);
+            pl.getChild("Playlist").set(args[1]);
             container.setCollapsed(false);
-            container.getChild("Playlist").setCollapsed(false);
+            pl.setCollapsed(false);
         } else {
             // 完整列表: args[0] = count, 之后每 6 字段一项
             var count = args[0];
@@ -318,10 +375,10 @@ function oscEvent(address, args, originIp) {
                 lines.push(idx + ": " + name + " " + dur + " " + fps + " " + second_idr + " " + last_idr);
             }
             var result = lines.join("\n");
-            container.getChild("Playlist").getChild("Playlist").set("");
-            container.getChild("Playlist").getChild("Playlist").set(result);
+            pl.getChild("Playlist").set("");
+            pl.getChild("Playlist").set(result);
             container.setCollapsed(false);
-            container.getChild("Playlist").setCollapsed(false);
+            pl.setCollapsed(false);
         }
     }
     if (address === "/kodi/playlist/state"){
@@ -486,7 +543,7 @@ function moduleParameterChanged(param) {
 function moduleValueChanged(value) {
     // 是参数
     if (value.isParameter()){
-        // script.log("ValueChanged: " + value.name + " : " + value.get());
+        script.log("ValueChanged: " + value.name + " : " + value.get());
         if (value.name === "alignmentTime" || value.name === "index") {
             var index = local.values.alignment.getChild("Index").get();
             var position = local.values.alignment.getChild("alignmentTime").get();
@@ -499,7 +556,15 @@ function moduleValueChanged(value) {
         }
         if (value.name === "manager") {
             var memberIP = local.values.getChild("multicastMembers").getChild("memberIP").get();
-            membersManager(memberIP, value.get());
+            var action = value.get();
+            membersManager(memberIP, action);
+            // 成员加入自动构建播放列表, 离开不构建
+            if (action === "join") {
+                local.values.getChild("multicastMembers").setCollapsed(true);
+                local.values.getChild("powerControl").setCollapsed(true);
+                local.values.getChild("alignment").setCollapsed(false);
+                buildPlaylist();
+            }
         }
         if (value.name === "alignmentDelay") {
             var index = local.values.alignment.getChild("Index").get();
