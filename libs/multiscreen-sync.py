@@ -641,11 +641,11 @@ class KodiSyncDaemon:
 
     def _process_event(self, method: str, params: Dict[str, Any]):
         log.info("Kodi event: %s", method)
+        # Always report /kodi/state regardless of command state (matches plugin behavior).
+        self._report_spontaneous_state(method, params)
         with self._lock:
             cmd = self._cmd
             if cmd is None:
-                # ── Spontaneous event (no command in progress) ──
-                self._report_spontaneous_state(method, params)
                 return
 
             # ── Command in progress — advance state machine ──
